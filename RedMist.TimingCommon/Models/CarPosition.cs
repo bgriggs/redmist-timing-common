@@ -47,13 +47,19 @@ public class CarPosition
     public int OverallPositionsGained { get; set; }
 
     [JsonPropertyName("cpg")]
-    public int IsInClassPositionsGained { get; set; }
+    public int InClassPositionsGained { get; set; }
+
+    [JsonPropertyName("ompg")]
+    public bool IsOverallMostPositionsGained { get; set; }
+
+    [JsonPropertyName("cmpg")]
+    public bool IsClassMostPositionsGained { get; set; }
 
     [JsonPropertyName("of")]
     public bool IsOverallFastest { get; set; }
 
     [JsonPropertyName("cf")]
-    public bool ClassFastest { get; set; }
+    public bool IsClassFastest { get; set; }
 
     [JsonPropertyName("pl")]
     public int PenalityLaps { get; set; }

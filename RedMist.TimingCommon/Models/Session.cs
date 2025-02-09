@@ -2,7 +2,7 @@
 
 namespace RedMist.TimingCommon.Models;
 
-class Session
+public class Session
 {
     [JsonPropertyName("sid")]
     public int SessionId { get; set; }
