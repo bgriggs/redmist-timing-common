@@ -2,7 +2,7 @@
 
 namespace RedMist.TimingCommon.Models;
 
-public class EventEntries
+public class EventEntry
 {
     [JsonPropertyName("no")]
     public string Number { get; set; } = string.Empty;
