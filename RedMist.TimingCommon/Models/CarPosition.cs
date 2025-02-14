@@ -16,6 +16,9 @@ public class CarPosition
     [JsonPropertyName("bt")]
     public string? BestTime { get; set; }
 
+    [JsonPropertyName("bl")]
+    public int BestLap { get; set; }
+
     [JsonPropertyName("ibt")]
     public bool IsBestTime { get; set; }
 
