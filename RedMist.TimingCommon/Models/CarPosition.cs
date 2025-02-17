@@ -73,12 +73,6 @@ public class CarPosition
     [JsonPropertyName("cmpg")]
     public bool IsClassMostPositionsGained { get; set; }
 
-    [JsonPropertyName("of")]
-    public bool IsOverallFastest { get; set; }
-
-    [JsonPropertyName("cf")]
-    public bool IsClassFastest { get; set; }
-
     [JsonPropertyName("pl")]
     public int PenalityLaps { get; set; }
 
