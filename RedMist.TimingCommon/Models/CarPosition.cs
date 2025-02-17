@@ -4,6 +4,8 @@ namespace RedMist.TimingCommon.Models;
 
 public class CarPosition
 {
+    public const int InvalidPosition = -999;
+
     [JsonPropertyName("eid")]
     public string? EventId { get; set; }
     
@@ -59,13 +61,13 @@ public class CarPosition
     public int OverallStartingPosition { get; set; }
 
     [JsonPropertyName("opg")]
-    public int OverallPositionsGained { get; set; }
+    public int OverallPositionsGained { get; set; } = InvalidPosition;
 
     [JsonPropertyName("icsp")]
     public int InClassStartingPosition { get; set; }
 
     [JsonPropertyName("cpg")]
-    public int InClassPositionsGained { get; set; }
+    public int InClassPositionsGained { get; set; } = InvalidPosition;
 
     [JsonPropertyName("ompg")]
     public bool IsOverallMostPositionsGained { get; set; }
