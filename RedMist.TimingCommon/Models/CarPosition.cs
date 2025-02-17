@@ -78,4 +78,7 @@ public class CarPosition
 
     [JsonPropertyName("ip")]
     public bool IsInPit { get; set; }
+
+    [JsonPropertyName("st")]
+    public bool IsStale { get; set; }
 }
