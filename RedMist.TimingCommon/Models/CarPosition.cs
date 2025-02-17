@@ -13,6 +13,9 @@ public class CarPosition
     [JsonPropertyName("n")]
     public string? Number { get; set; }
 
+    [JsonPropertyName("class")]
+    public string? Class { get; set; }
+
     [JsonPropertyName("bt")]
     public string? BestTime { get; set; }
 
@@ -25,11 +28,17 @@ public class CarPosition
     [JsonPropertyName("btc")]
     public bool IsBestTimeClass { get; set; }
 
-    [JsonPropertyName("g")]
-    public string? Gap { get; set; }
+    [JsonPropertyName("cg")]
+    public string? InClassGap { get; set; }
 
-    [JsonPropertyName("d")]
-    public string? Difference { get; set; }
+    [JsonPropertyName("cd")]
+    public string? InClassDifference { get; set; }
+
+    [JsonPropertyName("og")]
+    public string? OverallGap { get; set; }
+
+    [JsonPropertyName("od")]
+    public string? OverallDifference { get; set; }
 
     [JsonPropertyName("ttm")]
     public string? TotalTime { get; set; }
@@ -46,8 +55,14 @@ public class CarPosition
     [JsonPropertyName("clp")]
     public int ClassPosition { get; set; }
 
+    [JsonPropertyName("osp")]
+    public int OverallStartingPosition { get; set; }
+
     [JsonPropertyName("opg")]
     public int OverallPositionsGained { get; set; }
+
+    [JsonPropertyName("icsp")]
+    public int InClassStartingPosition { get; set; }
 
     [JsonPropertyName("cpg")]
     public int InClassPositionsGained { get; set; }
