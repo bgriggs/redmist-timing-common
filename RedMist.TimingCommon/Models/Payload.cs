@@ -19,4 +19,6 @@ public class Payload
     public List<CarPosition> CarPositions { get; set; } = new();
     [JsonPropertyName("cpu")]
     public List<CarPosition> CarPositionUpdates { get; set; } = new();
+    [JsonPropertyName("r")]
+    public bool IsReset { get; set; }
 }
