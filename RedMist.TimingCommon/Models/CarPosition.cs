@@ -92,4 +92,7 @@ public class CarPosition
 
     [JsonPropertyName("st")]
     public bool IsStale { get; set; }
+
+    [JsonPropertyName("flg")]
+    public int Flag { get; set; }
 }
