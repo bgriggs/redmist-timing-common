@@ -95,4 +95,7 @@ public class CarPosition
 
     [JsonPropertyName("flg")]
     public Flags Flag { get; set; }
+
+    [JsonPropertyName("ctllog")]
+    public List<ControlLogEntry>? ControlLog { get; set; }
 }
