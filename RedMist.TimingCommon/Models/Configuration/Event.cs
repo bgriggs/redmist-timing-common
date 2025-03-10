@@ -24,4 +24,6 @@ public class Event
     [MaxLength(20)]
     public string Distance { get; set; } = string.Empty;
     public BroadcasterConfig Broadcast { get; set; } = new BroadcasterConfig();
+    [Required] 
+    public bool IsDeleted { get; set; } = false;
 }
