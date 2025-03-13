@@ -1,18 +1,31 @@
-﻿using System.Text.Json.Serialization;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace RedMist.TimingCommon.Models;
 
+[PrimaryKey(nameof(Id), nameof(EventId))]
 public class Session
 {
     [JsonPropertyName("sid")]
-    public int SessionId { get; set; }
+    public int Id { get; set; }
+
+    [JsonPropertyName("eid")]
+    public int EventId { get; set; }
 
     [JsonPropertyName("n")]
-    public string SessionName { get; set; } = string.Empty;
+    [MaxLength(64)] // RMonitor max is 40
+    public string Name { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Session type: e.g. race, practice, qualifying, hpde, etc.
-    /// </summary>
-    [JsonPropertyName("t")]
-    public string SessionType { get; set; } = string.Empty;
+    [JsonPropertyName("st")]
+    public DateTime StartTime { get; set; }
+
+    [JsonPropertyName("et")]
+    public DateTime? EndTime { get; set; }
+
+    [JsonPropertyName("lu")]
+    public DateTime? LastUpdated { get; set; }
+
+    [JsonPropertyName("il")]
+    public bool IsLive { get; set; }
 }

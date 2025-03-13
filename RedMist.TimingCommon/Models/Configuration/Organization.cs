@@ -29,5 +29,4 @@ public class Organization
     public OrbitsConfiguration Orbits { get; set; } = new OrbitsConfiguration();
 
     public X2Configuration X2 { get; set; } = new X2Configuration();
-
 }
