@@ -23,6 +23,9 @@ public class Session
     [JsonPropertyName("et")]
     public DateTime? EndTime { get; set; }
 
+    [JsonPropertyName("tz")]
+    public double LocalTimeZoneOffset { get; set; }
+
     [JsonPropertyName("lu")]
     public DateTime? LastUpdated { get; set; }
 
