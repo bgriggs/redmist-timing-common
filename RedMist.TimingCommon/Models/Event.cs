@@ -23,4 +23,5 @@ public class Event
     public string CourseConfiguration { get; set; } = string.Empty;
     public string Distance { get; set; } = string.Empty;
     public BroadcasterConfig? Broadcast { get; set; }
+    public bool HasControlLog { get; set; }
 }
