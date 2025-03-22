@@ -1,9 +1,17 @@
-﻿namespace RedMist.TimingCommon.Models.X2;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
+namespace RedMist.TimingCommon.Models.X2;
+
+[PrimaryKey(nameof(OrganizationId), nameof(EventId), nameof(Id))]
 public class Loop
 {
+    public int OrganizationId { get; set; }
+    public int EventId { get; set; }
     public uint Id { get; set; }
+    [MaxLength(20)] // X2 max is 16
     public string Name { get; set; } = string.Empty;
+    [MaxLength(64)] // X2 max is 52
     public string Description { get; set; } = string.Empty;
     public double Latitude0 { get; set; }
     public double Longitude0 { get; set; }
