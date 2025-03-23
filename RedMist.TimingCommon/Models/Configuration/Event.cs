@@ -14,7 +14,7 @@ public class Event
     public DateTime EndDate { get; set; }
     public bool IsActive { get; set; }
     [MaxLength(512)]
-    public string EventUrl{get;set; } = string.Empty;
+    public string EventUrl { get; set; } = string.Empty;
     public EventSchedule Schedule { get; set; } = new EventSchedule();
     public bool EnableSourceDataLogging { get; set; } = true;
     [MaxLength(128)]
@@ -24,6 +24,7 @@ public class Event
     [MaxLength(20)]
     public string Distance { get; set; } = string.Empty;
     public BroadcasterConfig Broadcast { get; set; } = new BroadcasterConfig();
-    [Required] 
+    public List<LoopMetadata> LoopsMetadata { get; set; } = [];
+    [Required]
     public bool IsDeleted { get; set; } = false;
 }

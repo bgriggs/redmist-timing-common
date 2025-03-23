@@ -15,6 +15,9 @@ public class CarPosition
     [JsonPropertyName("n")]
     public string? Number { get; set; }
 
+    [JsonPropertyName("tp")]
+    public uint TransponderId { get; set; }
+
     [JsonPropertyName("class")]
     public string? Class { get; set; }
 
@@ -84,11 +87,17 @@ public class CarPosition
     [JsonPropertyName("enp")]
     public bool IsEnteredPit { get; set; }
 
+    [JsonPropertyName("psf")]
+    public bool IsPitStartFinish { get; set; }
+
     [JsonPropertyName("exp")]
     public bool IsExistedPit { get; set; }
 
     [JsonPropertyName("ip")]
     public bool IsInPit { get; set; }
+
+    [JsonPropertyName("ln")]
+    public string LastLoopName { get; set; } = string.Empty;
 
     [JsonPropertyName("st")]
     public bool IsStale { get; set; }
