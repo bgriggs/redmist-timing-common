@@ -91,7 +91,7 @@ public class CarPosition
     public bool IsPitStartFinish { get; set; }
 
     [JsonPropertyName("exp")]
-    public bool IsExistedPit { get; set; }
+    public bool IsExitedPit { get; set; }
 
     [JsonPropertyName("ip")]
     public bool IsInPit { get; set; }
