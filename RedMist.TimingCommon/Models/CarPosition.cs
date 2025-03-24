@@ -96,6 +96,9 @@ public class CarPosition
     [JsonPropertyName("ip")]
     public bool IsInPit { get; set; }
 
+    [JsonPropertyName("lip")]
+    public bool LapIncludedPit { get; set; }
+
     [JsonPropertyName("ln")]
     public string LastLoopName { get; set; } = string.Empty;
 
