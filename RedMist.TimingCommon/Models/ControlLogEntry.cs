@@ -12,8 +12,12 @@ public class ControlLogEntry
     public string Corner { get; set; } = string.Empty;
     [JsonPropertyName("c1")]
     public string Car1 { get; set; } = string.Empty;
+    [JsonPropertyName("c1h")]
+    public bool IsCar1Highlighted { get; set; }
     [JsonPropertyName("c2")]
     public string Car2 { get; set; } = string.Empty;
+    [JsonPropertyName("c2h")]
+    public bool IsCar2Highlighted { get; set; }
     [JsonPropertyName("n")]
     public string Note { get; set; } = string.Empty;
     [JsonPropertyName("s")]
