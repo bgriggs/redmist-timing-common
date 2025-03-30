@@ -19,7 +19,7 @@ public class Payload
     [JsonPropertyName("cpu")]
     public List<CarPosition> CarPositionUpdates { get; set; } = [];
     [JsonPropertyName("fd")]
-    public List<FlagDuration> FlagDurations { get; set; } = [];
+    public List<FlagDuration>? FlagDurations { get; set; }
     [JsonPropertyName("r")]
     public bool IsReset { get; set; }
 }
