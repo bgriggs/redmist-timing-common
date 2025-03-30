@@ -6,16 +6,14 @@ public class EventStatus
 {
     [JsonPropertyName("eid")]
     public string? EventId { get; set; }
-
     [JsonPropertyName("f")]
     public Flags Flag { get; set; }
-
     [JsonPropertyName("ltg")]
     public int LapsToGo { get; set; }
-
     [JsonPropertyName("ttg")]
     public string TimeToGo { get; set; } = string.Empty;
-
     [JsonPropertyName("tt")]
-    public string TotalTime { get; set; } = string.Empty;
+    public string LocalTimeOfDay { get; set; } = string.Empty;
+    [JsonPropertyName("rt")]
+    public string RunningRaceTime { get; set; } = string.Empty;
 }
