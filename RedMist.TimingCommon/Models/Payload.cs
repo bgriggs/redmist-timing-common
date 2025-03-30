@@ -2,7 +2,6 @@
 
 namespace RedMist.TimingCommon.Models;
 
-
 public class Payload
 {
     [JsonPropertyName("e")]
@@ -12,13 +11,15 @@ public class Payload
     [JsonPropertyName("es")]
     public EventStatus? EventStatus { get; set; }
     [JsonPropertyName("ee")]
-    public List<EventEntry> EventEntries { get; set; } = new();
+    public List<EventEntry> EventEntries { get; set; } = [];
     [JsonPropertyName("eeu")]
-    public List<EventEntry> EventEntryUpdates { get; set; } = new();
+    public List<EventEntry> EventEntryUpdates { get; set; } = [];
     [JsonPropertyName("cps")]
-    public List<CarPosition> CarPositions { get; set; } = new();
+    public List<CarPosition> CarPositions { get; set; } = [];
     [JsonPropertyName("cpu")]
-    public List<CarPosition> CarPositionUpdates { get; set; } = new();
+    public List<CarPosition> CarPositionUpdates { get; set; } = [];
+    [JsonPropertyName("fd")]
+    public List<FlagDuration> FlagDurations { get; set; } = [];
     [JsonPropertyName("r")]
     public bool IsReset { get; set; }
 }
