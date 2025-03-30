@@ -5,7 +5,7 @@ namespace RedMist.TimingCommon.Models;
 public class FlagDuration
 {
     [JsonPropertyName("f")]
-    public Flags Flags { get; set; }
+    public Flags Flag { get; set; }
     [JsonPropertyName("s")]
     public DateTime StartTime { get; set; }
     [JsonPropertyName("e")]
