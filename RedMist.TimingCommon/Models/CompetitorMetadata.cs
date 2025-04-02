@@ -34,8 +34,6 @@ public class CompetitorMetadata
     public string Make { get; set; } = string.Empty;
     [MaxLength(128)]
     public string Hometown { get; set; } = string.Empty;
-    [MaxLength(48)]
-    public string Model { get; set; } = string.Empty;
     [MaxLength(64)]
     public string Club { get; set; } = string.Empty;
     [MaxLength(48)]
