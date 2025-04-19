@@ -15,6 +15,10 @@ public class Organization
     [MaxLength(255)]
     public string Name { get; set; } = string.Empty;
 
+    [Required]
+    [MaxLength(8)]
+    public string ShortName { get; set; } = string.Empty;
+
     [MaxLength(1024)]
     public string? Website { get; set; }
 
