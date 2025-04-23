@@ -6,10 +6,10 @@
 		<Nullable>enable</Nullable>
 		<Platforms>AnyCPU;x64;x86</Platforms>
 	</PropertyGroup>
-	<ItemGroup Condition="Exists('..\..\Directory.Build.props') == 'false'">
+	<ItemGroup Condition="Exists('..\..\Directory.Packages.props') == 'false'">
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
 	</ItemGroup>
-	<ItemGroup Condition="Exists('..\..\Directory.Build.props') == 'true'">
+	<ItemGroup Condition="Exists('..\..\Directory.Packages.props') == 'true'">
 		<PackageReference Include="Microsoft.EntityFrameworkCore" />
 	</ItemGroup>
 </Project>
