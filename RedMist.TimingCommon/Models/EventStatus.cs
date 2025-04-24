@@ -16,4 +16,6 @@ public class EventStatus
     public string LocalTimeOfDay { get; set; } = string.Empty;
     [JsonPropertyName("rt")]
     public string RunningRaceTime { get; set; } = string.Empty;
+    [JsonPropertyName("pq")]
+    public bool IsPracticeQualifying { get; set; }
 }

@@ -31,4 +31,6 @@ public class Session
 
     [JsonPropertyName("il")]
     public bool IsLive { get; set; }
+    [JsonPropertyName("pq")]
+    public bool IsPracticeQualifying { get; set; }
 }
