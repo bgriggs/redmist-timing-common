@@ -13,6 +13,7 @@ public class Event
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public bool IsActive { get; set; }
+    public bool IsLive { get; set; }
     [MaxLength(512)]
     public string EventUrl { get; set; } = string.Empty;
     public EventSchedule Schedule { get; set; } = new EventSchedule();

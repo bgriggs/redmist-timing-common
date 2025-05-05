@@ -33,4 +33,6 @@ public class Event
     public BroadcasterConfig? Broadcast { get; set; }
     [JsonPropertyName("hc")]
     public bool HasControlLog { get; set; }
+    [JsonPropertyName("il")]
+    public bool IsLive { get; set; }
 }
