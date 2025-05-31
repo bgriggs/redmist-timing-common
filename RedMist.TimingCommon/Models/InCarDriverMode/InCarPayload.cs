@@ -7,6 +7,8 @@ namespace RedMist.TimingCommon.Models.InCarDriverMode;
 /// </summary>
 public class InCarPayload
 {
+    [JsonPropertyName("n")]
+    public string CarNumber { get; set; } = string.Empty;
     [JsonPropertyName("p")] 
     public string PositionInClass { get; set; } = string.Empty;
     [JsonPropertyName("o")] 
