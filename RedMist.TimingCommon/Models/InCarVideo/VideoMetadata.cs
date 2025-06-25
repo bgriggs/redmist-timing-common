@@ -48,4 +48,10 @@ public class VideoMetadata
     /// </summary>
     [JsonPropertyName("l")]
     public bool IsLive { get; set; } = false;
+
+    /// <summary>
+    /// Name of the driver if available.
+    /// </summary>
+    [JsonPropertyName("d")]
+    public string DriverName { get; set; } = string.Empty;
 }
