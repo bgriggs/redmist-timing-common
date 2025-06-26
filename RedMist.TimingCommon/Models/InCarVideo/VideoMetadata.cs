@@ -52,6 +52,6 @@ public class VideoMetadata
     /// <summary>
     /// Name of the driver if available.
     /// </summary>
-    [JsonPropertyName("d")]
+    [JsonPropertyName("dn")]
     public string DriverName { get; set; } = string.Empty;
 }
