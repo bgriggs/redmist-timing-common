@@ -324,9 +324,16 @@ public class CarPosition
     [ProtoMember(49)]
     public double? Longitude { get; set; }
     /// <summary>
+    /// Active, In Pits,DNS, Contact, Mechanical, etc. Only available with multiloop systems.
+    /// </summary>
+    [JsonPropertyName("mcs")]
+    [MaxLength(12)]
+    [ProtoMember(50)]
+    public string CurrentStatus{ get; set; } = string.Empty;
+    /// <summary>
     /// Car may have been involved in an incident. Only available with certain in-car systems.
     /// </summary>
     [JsonPropertyName("iw")]
-    [ProtoMember(50)]
+    [ProtoMember(51)]
     public bool ImpactWarning { get; set; }
 }

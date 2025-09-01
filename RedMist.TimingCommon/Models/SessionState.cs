@@ -107,24 +107,65 @@ public class SessionState
     [ProtoMember(17)]
     public List<FlagDuration> FlagDurations { get; set; } = [];
     /// <summary>
+    /// Amount of time in milliseconds the session has been under green. Available with Multiloop timing systems.
+    /// </summary>
+    [ProtoMember(18)] 
+    public int? GreenTimeMs { get; set; }
+    /// <summary>
+    /// Number of laps the session has been under green. Available with Multiloop timing systems.
+    /// </summary>
+    [ProtoMember(19)]
+    public int? GreenLaps { get; set; }
+    /// <summary>
+    /// Amount of time in milliseconds the session has been under yellow. Available with Multiloop timing systems.
+    /// </summary>
+    [ProtoMember(20)]
+    public int? YellowTimeMs { get; set; }
+    /// <summary>
+    /// Number of laps the session has been under yellow. Available with Multiloop timing systems.
+    /// </summary>
+    [ProtoMember(21)]
+    public int? YellowLaps { get; set; }
+    /// <summary>
+    /// Number of yellow flag periods in the session. Available with Multiloop timing systems.
+    /// </summary>
+    [ProtoMember(22)]
+    public int? NumberOfYellows { get; set; }
+    /// <summary>
+    /// Amount of time in milliseconds the session has been under red. Available with Multiloop timing systems.
+    /// </summary>
+    [ProtoMember(23)]
+    public int? RedTimeMs { get; set; }
+    /// <summary>
+    /// Gets or sets the average speed of the race, expressed as a string, e.g. 130.456 mph.
+    /// </summary>
+    [MaxLength(11)]
+    [ProtoMember(24)]
+    public string? AverageRaceSpeed { get; set; }
+    /// <summary>
+    /// Count of overall lead changes in the session. Available with Multiloop timing systems.
+    /// </summary>
+    [ProtoMember(25)]
+    public int? LeadChanges { get; set; }
+    /// <summary>
     /// Track sections as indicated by the timing system.
     /// </summary>
-    [ProtoMember(18)]
+    [ProtoMember(26)]
     public List<Section> Sections { get; set; } = [];
     /// <summary>
     /// Class colors in hexadecimal format #RRGGBB (e.g., "#FF0000" for red).
     /// Each color corresponds to a racing class for visual identification.
     /// </summary>
-    [ProtoMember(19)]
+    [ProtoMember(27)]
     public Dictionary<string, string> ClassColors { get; set; } = [];
     /// <summary>
     /// Session announcements as indicated by the timing system.
     /// </summary>
-    [ProtoMember(20)]
+    [ProtoMember(28)]
     public List<Announcement> Announcements { get; set; } = [];
     /// <summary>
     /// Last time the session state was updated.
     /// </summary>
-    [ProtoMember(21)]
+    [ProtoMember(29)]
     public DateTime? LastUpdated { get; set; }
 }
