@@ -1,9 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace RedMist.TimingCommon.Models.X2;
 
-[PrimaryKey(nameof(OrganizationId), nameof(EventId), nameof(Id))]
 public class Passing
 {
     [JsonPropertyName("o")]

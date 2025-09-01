@@ -1,10 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace RedMist.TimingCommon.Models;
 
-[PrimaryKey(nameof(Id), nameof(EventId))]
 public class Session
 {
     [JsonPropertyName("sid")]

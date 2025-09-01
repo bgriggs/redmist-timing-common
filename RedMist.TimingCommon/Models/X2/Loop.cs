@@ -1,9 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace RedMist.TimingCommon.Models.X2;
 
-[PrimaryKey(nameof(OrganizationId), nameof(EventId), nameof(Id))]
 public class Loop
 {
     public int OrganizationId { get; set; }
