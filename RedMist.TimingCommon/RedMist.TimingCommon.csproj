@@ -12,8 +12,13 @@
 		<Copyright>2024-2025</Copyright>
 		<Version>1.1.0</Version>
 	</PropertyGroup>
+
 	
 	<ItemGroup>
-		<PackageReference Include="protobuf-net" Version="3.2.56" />
+		<PackageReference Include="MessagePack" Version="3.1.4" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\RedMist.PatchGenerator\RedMist.PatchGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿using ProtoBuf;
+﻿using MessagePack;
 using System.ComponentModel.DataAnnotations;
 
 namespace RedMist.TimingCommon.Models;
@@ -6,7 +6,7 @@ namespace RedMist.TimingCommon.Models;
 /// <summary>
 /// Represents a completed section in the timing system for a given competitor.
 /// </summary>
-[ProtoContract]
+[MessagePackObject]
 public class CompletedSection
 {
     /// <summary>
@@ -14,27 +14,27 @@ public class CompletedSection
     /// </summary>
     /// <remarks>Max length is 4 if multiloop is in use</remarks>
     [MaxLength(5)]
-    [ProtoMember(1)]
+    [MessagePack.Key(0)]
     public string Number { get; set; } = string.Empty;
     /// <summary>
     /// Section ID from the timing system.
     /// </summary>
     [MaxLength(5)]
-    [ProtoMember(2)]
+    [MessagePack.Key(1)]
     public string SectionId { get; set; } = string.Empty;
     /// <summary>
     /// Section time in milliseconds.
     /// </summary>
-    [ProtoMember(3)]
+    [MessagePack.Key(2)]
     public int ElapsedTimeMs { get; set; }
     /// <summary>
     /// Previous section time in milliseconds.
     /// </summary>
-    [ProtoMember(4)]
+    [MessagePack.Key(3)]
     public int LastSectionTimeMs { get; set; }
     /// <summary>
     /// Lap number for the last completed section.
     /// </summary>
-    [ProtoMember(5)]
+    [MessagePack.Key(4)]
     public int LastLap { get; set; }
 }

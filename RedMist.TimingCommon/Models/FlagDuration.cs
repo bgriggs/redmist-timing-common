@@ -1,4 +1,4 @@
-﻿using ProtoBuf;
+﻿using MessagePack;
 using System.Text.Json.Serialization;
 
 namespace RedMist.TimingCommon.Models;
@@ -6,25 +6,25 @@ namespace RedMist.TimingCommon.Models;
 /// <summary>
 /// Instance of a flag state during a session.
 /// </summary>
-[ProtoContract]
+[MessagePackObject]
 public class FlagDuration
 {
     /// <summary>
     /// The flag that is or was active.
     /// </summary>
     [JsonPropertyName("f")]
-    [ProtoMember(1)]
+    [MessagePack.Key(0)]
     public Flags Flag { get; set; }
     /// <summary>
     /// When the flag state started.
     /// </summary>
     [JsonPropertyName("s")]
-    [ProtoMember(2)]
+    [MessagePack.Key(1)]
     public DateTime StartTime { get; set; }
     /// <summary>
     /// When the flag state ended, or null if it is still active.
     /// </summary>
     [JsonPropertyName("e")]
-    [ProtoMember(3)]
+    [MessagePack.Key(2)]
     public DateTime? EndTime { get; set; }
 }
