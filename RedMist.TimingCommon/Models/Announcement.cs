@@ -34,4 +34,19 @@ public class Announcement
         //CarPositionPatch
         //SessionStateMapper
     }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is Announcement other && Equals(other);
+    }
+
+    public bool Equals(Announcement other)
+    {
+        return Timestamp == other.Timestamp && Priority == other.Priority && Text == other.Text;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Timestamp, Priority, Text);
+    }
 }

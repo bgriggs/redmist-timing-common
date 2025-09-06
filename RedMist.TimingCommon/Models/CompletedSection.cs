@@ -37,4 +37,19 @@ public class CompletedSection
     /// </summary>
     [MessagePack.Key(4)]
     public int LastLap { get; set; }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is CompletedSection section &&
+               Number == section.Number &&
+               SectionId == section.SectionId &&
+               ElapsedTimeMs == section.ElapsedTimeMs &&
+               LastSectionTimeMs == section.LastSectionTimeMs &&
+               LastLap == section.LastLap;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Number, SectionId, ElapsedTimeMs, LastSectionTimeMs, LastLap);
+    }
 }

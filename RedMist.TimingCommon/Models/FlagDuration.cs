@@ -27,4 +27,19 @@ public class FlagDuration
     [JsonPropertyName("e")]
     [MessagePack.Key(2)]
     public DateTime? EndTime { get; set; }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is FlagDuration other && Equals(other);
+    }
+
+    public bool Equals(FlagDuration other)
+    {
+        return Flag == other.Flag && StartTime == other.StartTime && EndTime == other.EndTime;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Flag, StartTime, EndTime);
+    }
 }
