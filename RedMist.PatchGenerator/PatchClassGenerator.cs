@@ -532,6 +532,31 @@ namespace RedMist.PatchGenerator
             sourceBuilder.AppendLine("            return changes.ToArray();");
             sourceBuilder.AppendLine("        }");
 
+            sourceBuilder.AppendLine();
+
+            // Merge method - combines two patches with second taking priority
+            sourceBuilder.AppendLine("        /// <summary>");
+            sourceBuilder.AppendLine($"        /// Merges two {classInfo.PatchClassName} instances, with the second patch taking priority.");
+            sourceBuilder.AppendLine("        /// Non-null properties in the second patch will override corresponding properties in the first patch.");
+            sourceBuilder.AppendLine("        /// </summary>");
+            sourceBuilder.AppendLine($"        /// <param name=\"firstPatch\">The base patch</param>");
+            sourceBuilder.AppendLine($"        /// <param name=\"secondPatch\">The patch whose non-null properties will override the first</param>");
+            sourceBuilder.AppendLine($"        /// <returns>A new merged {classInfo.PatchClassName} instance</returns>");
+            sourceBuilder.AppendLine($"        public static {classInfo.PatchClassName} Merge({classInfo.PatchClassName} firstPatch, {classInfo.PatchClassName} secondPatch)");
+            sourceBuilder.AppendLine("        {");
+            sourceBuilder.AppendLine($"            var merged = new {classInfo.PatchClassName}();");
+            sourceBuilder.AppendLine();
+
+            // Generate merge logic for each property
+            foreach (var prop in allProperties)
+            {
+                sourceBuilder.AppendLine($"            merged.{prop.Name} = secondPatch.{prop.Name} ?? firstPatch.{prop.Name};");
+            }
+
+            sourceBuilder.AppendLine();
+            sourceBuilder.AppendLine("            return merged;");
+            sourceBuilder.AppendLine("        }");
+
             sourceBuilder.AppendLine("    }");
             sourceBuilder.AppendLine("}");
 
