@@ -550,7 +550,7 @@ namespace RedMist.PatchGenerator
             // Generate merge logic for each property
             foreach (var prop in allProperties)
             {
-                sourceBuilder.AppendLine($"            merged.{prop.Name} = secondPatch.{prop.Name} ?? firstPatch.{prop.Name};");
+                    sourceBuilder.AppendLine($"            merged.{prop.Name} = secondPatch.{prop.Name} ?? firstPatch.{prop.Name};");
             }
 
             sourceBuilder.AppendLine();
