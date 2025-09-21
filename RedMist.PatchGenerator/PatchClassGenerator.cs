@@ -464,6 +464,29 @@ namespace RedMist.PatchGenerator
             sourceBuilder.AppendLine("        }");
             sourceBuilder.AppendLine();
 
+            // ToPatch method - copies all fields from source to patch
+            sourceBuilder.AppendLine("        /// <summary>");
+            sourceBuilder.AppendLine($"        /// Creates a {classInfo.PatchClassName} from a {classInfo.SourceClassName} by copying all fields.");
+            sourceBuilder.AppendLine("        /// This creates a complete patch representation of the source object.");
+            sourceBuilder.AppendLine("        /// </summary>");
+            sourceBuilder.AppendLine($"        /// <param name=\"source\">The source {classInfo.SourceClassName} to convert</param>");
+            sourceBuilder.AppendLine($"        /// <returns>A {classInfo.PatchClassName} with all properties set from the source</returns>");
+            sourceBuilder.AppendLine($"        public static {classInfo.PatchClassName} ToPatch({classInfo.SourceClassName} source)");
+            sourceBuilder.AppendLine("        {");
+            sourceBuilder.AppendLine($"            var patch = new {classInfo.PatchClassName}();");
+            sourceBuilder.AppendLine();
+
+            // Generate copy logic for each property
+            foreach (var prop in allProperties)
+            {
+                sourceBuilder.AppendLine($"            patch.{prop.Name} = source.{prop.Name};");
+            }
+
+            sourceBuilder.AppendLine();
+            sourceBuilder.AppendLine("            return patch;");
+            sourceBuilder.AppendLine("        }");
+            sourceBuilder.AppendLine();
+
             // CreatePatch method (manual implementation)
             sourceBuilder.AppendLine("        /// <summary>");
             sourceBuilder.AppendLine($"        /// Creates a patch from the differences between two {classInfo.SourceClassName} instances.");

@@ -33,6 +33,7 @@ public class Announcement
         //SessionStatePatch
         //CarPositionPatch
         //SessionStateMapper
+        //CarPositionMapper
     }
 
     public override bool Equals(object? obj)
