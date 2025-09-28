@@ -16,5 +16,5 @@ public class InCarPayload
     [JsonPropertyName("f")]
     public Flags Flag { get; set; } = Flags.Unknown;
     [JsonPropertyName("c")]
-    public List<CarStatus> Cars { get; set; } = [];
+    public List<CarStatus?> Cars { get; set; } = [];
 }
