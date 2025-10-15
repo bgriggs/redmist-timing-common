@@ -122,7 +122,7 @@ public class CarPosition
     /// <summary>
     /// Last lap number.
     /// </summary>
-    [JsonPropertyName("llc")]
+    [JsonPropertyName("llp")]
     [MessagePack.Key(15)]
     public int LastLapCompleted { get; set; }
     /// <summary>
@@ -134,7 +134,6 @@ public class CarPosition
     /// <summary>
     /// Last lap number the car pitted. Null if not supported by the timing system.
     /// </summary>
-    [JsonPropertyName("llp")]
     [MessagePack.Key(17)]
     public int? LastLapPitted { get; set; }
     /// <summary>
