@@ -9,8 +9,11 @@
 		<Company>Big Mission Motorsports, LLC</Company>
 		<Product>Red Mist</Product>
 		<Description>Shared model classes for Red Mist Timing projects.</Description>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Copyright>2024-2025</Copyright>
-		<Version>1.1.4</Version>
+		<Version>1.1.5</Version>
 	</PropertyGroup>
 
 	
