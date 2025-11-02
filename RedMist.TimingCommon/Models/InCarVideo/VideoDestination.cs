@@ -1,5 +1,7 @@
 ﻿using MessagePack;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using KeyAttribute = MessagePack.KeyAttribute;
 
 namespace RedMist.TimingCommon.Models.InCarVideo;
 
@@ -20,12 +22,14 @@ public class VideoDestination
     /// </summary>
     [JsonPropertyName("u")]
     [Key(1)]
+    [MaxLength(2083)] 
     public string Url { get; set; } = string.Empty;
     /// <summary>
     /// Destination URL's host name or IP address.
     /// </summary>
     [JsonPropertyName("h")]
     [Key(2)]
+    [MaxLength(2083)]
     public string HostName { get; set; } = string.Empty;
     /// <summary>
     /// Destination's port.
@@ -38,5 +42,6 @@ public class VideoDestination
     /// </summary>
     [JsonPropertyName("pa")]
     [Key(4)]
+    [MaxLength(30)]
     public string Parameters { get; set; } = string.Empty;
 }

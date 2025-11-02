@@ -5,6 +5,7 @@ namespace RedMist.TimingCommon.Models;
 
 /// <summary>
 /// Track segment or section information, e.g., for a pit lane or track sector.
+/// Multiloop support is required to utilize this feature.
 /// </summary>
 [MessagePackObject]
 public class Section

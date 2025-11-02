@@ -2,6 +2,7 @@
 
 namespace RedMist.TimingCommon.Models;
 
+[Obsolete("Use RedMist.TimingCommon.Models.SessionState instead")]
 public class Payload
 {
     [JsonPropertyName("e")]

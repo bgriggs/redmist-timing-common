@@ -15,12 +15,14 @@ public class Announcement
     /// </summary>
     [MessagePack.Key(0)]
     public DateTime Timestamp { get; set; }
+
     /// <summary>
     /// Announcement priority ("Urgent", "High", "Normal", "Low").
     /// </summary>
     [MaxLength(6)]
     [MessagePack.Key(1)]
     public string Priority { get; set; } = string.Empty;
+
     /// <summary>
     /// The message.
     /// </summary>

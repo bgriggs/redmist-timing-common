@@ -15,12 +15,14 @@ public class FlagDuration
     [JsonPropertyName("f")]
     [MessagePack.Key(0)]
     public Flags Flag { get; set; }
+
     /// <summary>
     /// When the flag state started.
     /// </summary>
     [JsonPropertyName("s")]
     [MessagePack.Key(1)]
     public DateTime StartTime { get; set; }
+
     /// <summary>
     /// When the flag state ended, or null if it is still active.
     /// </summary>

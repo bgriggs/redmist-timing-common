@@ -8,4 +8,6 @@ public enum VideoSystemType
     None,
     Generic,
     Sentinel,
+    MyRacesLive,
+    AutosportLabs
 }

@@ -93,11 +93,13 @@ public class SessionState
     /// They may not be the same as the cars that actually participated in the event.
     /// </summary>
     [MessagePack.Key(13)]
+    [MaxLength(500)]
     public List<EventEntry> EventEntries { get; set; } = [];
     /// <summary>
     /// Represents the current position and status of each car in the event.
     /// </summary>
     [MessagePack.Key(14)]
+    [MaxLength(500)]
     public List<CarPosition> CarPositions { get; set; } = [];
     /// <summary>
     /// Current flag state for the event.
@@ -108,6 +110,7 @@ public class SessionState
     /// Flag states for the event, including durations.
     /// </summary>
     [MessagePack.Key(16)]
+    [MaxLength(100)]
     public List<FlagDuration> FlagDurations { get; set; } = [];
     /// <summary>
     /// Amount of time in milliseconds the session has been under green. Available with Multiloop timing systems.
@@ -154,17 +157,20 @@ public class SessionState
     /// Track sections as indicated by the timing system.
     /// </summary>
     [MessagePack.Key(25)]
+    [MaxLength(5)]
     public List<Section> Sections { get; set; } = [];
     /// <summary>
     /// Class colors in hexadecimal format #RRGGBB (e.g., "#FF0000" for red).
     /// Each color corresponds to a racing class for visual identification.
     /// </summary>
     [MessagePack.Key(26)]
+    [MaxLength(50)]
     public Dictionary<string, string> ClassColors { get; set; } = [];
     /// <summary>
     /// Session announcements as indicated by the timing system.
     /// </summary>
     [MessagePack.Key(27)]
+    [MaxLength(500)]
     public List<Announcement> Announcements { get; set; } = [];
     /// <summary>
     /// Last time the session state was updated.

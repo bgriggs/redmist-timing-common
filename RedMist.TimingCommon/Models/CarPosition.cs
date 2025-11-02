@@ -251,6 +251,7 @@ public class CarPosition
     /// </summary>
     [JsonPropertyName("ln")]
     [MessagePack.Key(36)]
+    [MaxLength(10)]
     public string LastLoopName { get; set; } = string.Empty;
     /// <summary>
     /// Car position is stale and has not been updated for a while.
@@ -281,6 +282,7 @@ public class CarPosition
     /// </summary>
     [JsonPropertyName("csec")]
     [MessagePack.Key(41)]
+    [MaxLength(5)]
     public List<CompletedSection> CompletedSections { get; set; } = [];
     /// <summary>
     /// Estimated lap time for the car.
@@ -299,12 +301,14 @@ public class CarPosition
     /// </summary>
     [JsonPropertyName("dn")]
     [MessagePack.Key(44)]
+    [MaxLength(25)]
     public string DriverName { get; set; } = string.Empty;
     /// <summary>
     /// Current ID of the driver.
     /// </summary>
     [JsonPropertyName("did")]
     [MessagePack.Key(45)]
+    [MaxLength(36)]
     public string DriverId { get; set; } = string.Empty;
     /// <summary>
     /// In-car video details if available.

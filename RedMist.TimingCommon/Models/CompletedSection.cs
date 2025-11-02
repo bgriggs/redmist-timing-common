@@ -5,6 +5,7 @@ namespace RedMist.TimingCommon.Models;
 
 /// <summary>
 /// Represents a completed section in the timing system for a given competitor.
+/// Multiloop support is required to utilize this feature.
 /// </summary>
 [MessagePackObject]
 public class CompletedSection
