@@ -15,7 +15,6 @@ public class DriverInfo
     /// Redmist Event ID.
     /// Either EventId and CarNumber or TransponderId must be provided.
     /// </summary>
-    [MaxLength(11)]
     [MessagePack.Key(0)]
     public int EventId { get; set; }
 
