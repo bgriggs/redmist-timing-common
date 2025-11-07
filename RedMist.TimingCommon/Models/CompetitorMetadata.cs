@@ -67,6 +67,7 @@ public class CompetitorMetadata
     /// Maximum length: 64 characters.
     /// </summary>
     [MaxLength(64)]
+    [JsonPropertyName("fn")]
     [MessagePack.Key(6)]
     public string FirstName { get; set; } = string.Empty;
 
@@ -76,6 +77,7 @@ public class CompetitorMetadata
     /// Maximum length: 64 characters.
     /// </summary>
     [MaxLength(64)]
+    [JsonPropertyName("ln")]
     [MessagePack.Key(7)]
     public string LastName { get; set; } = string.Empty;
 
@@ -85,6 +87,7 @@ public class CompetitorMetadata
     /// Maximum length: 128 characters.
     /// </summary>
     [MaxLength(128)]
+    [JsonPropertyName("ns")]
     [MessagePack.Key(8)]
     public string NationState { get; set; } = string.Empty;
 
@@ -94,6 +97,7 @@ public class CompetitorMetadata
     /// Maximum length: 200 characters.
     /// </summary>
     [MaxLength(200)]
+    [JsonPropertyName("s")]
     [MessagePack.Key(9)]
     public string Sponsor { get; set; } = string.Empty;
 
@@ -103,6 +107,7 @@ public class CompetitorMetadata
     /// Maximum length: 48 characters.
     /// </summary>
     [MaxLength(48)]
+    [JsonPropertyName("mk")]
     [MessagePack.Key(10)]
     public string Make { get; set; } = string.Empty;
 
@@ -112,6 +117,7 @@ public class CompetitorMetadata
     /// Maximum length: 128 characters.
     /// </summary>
     [MaxLength(128)]
+    [JsonPropertyName("h")]
     [MessagePack.Key(11)]
     public string Hometown { get; set; } = string.Empty;
 
@@ -121,6 +127,7 @@ public class CompetitorMetadata
     /// Maximum length: 64 characters.
     /// </summary>
     [MaxLength(64)]
+    [JsonPropertyName("c")]
     [MessagePack.Key(12)]
     public string Club { get; set; } = string.Empty;
 
@@ -130,6 +137,7 @@ public class CompetitorMetadata
     /// Maximum length: 48 characters.
     /// </summary>
     [MaxLength(48)]
+    [JsonPropertyName("mo")]
     [MessagePack.Key(13)]
     public string ModelEngine { get; set; } = string.Empty;
 
@@ -139,6 +147,7 @@ public class CompetitorMetadata
     /// Maximum length: 48 characters.
     /// </summary>
     [MaxLength(48)]
+    [JsonPropertyName("tr")]
     [MessagePack.Key(14)]
     public string Tires { get; set; } = string.Empty;
 
@@ -148,6 +157,7 @@ public class CompetitorMetadata
     /// Maximum length: 128 characters.
     /// </summary>
     [MaxLength(128)]
+    [JsonPropertyName("a")]
     [MessagePack.Key(15)]
     public string Email { get; set; } = string.Empty;
 }
