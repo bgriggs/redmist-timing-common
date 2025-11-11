@@ -11,7 +11,7 @@ namespace RedMist.TimingCommon.Extensions;
 /// CarPosition objects to facilitate safe duplication without shared references.</remarks>
 public static class CarPositionExtensions
 {
-    private static readonly CarPositionMapper mapper = new();
+    private static readonly CarPositionMapperExt mapper = new();
 
     /// <summary>
     /// Creates a deep copy of a CarPosition using the auto-generated CarPositionMapper.
@@ -37,7 +37,7 @@ public static class CarPositionExtensions
 /// Mapper for CarPosition objects using Mapperly code generation
 /// </summary>
 [Mapper(UseDeepCloning = true)]
-public partial class CarPositionMapper
+public partial class CarPositionMapperExt
 {
     /// <summary>
     /// Creates deep copies of a list of CarPosition objects
