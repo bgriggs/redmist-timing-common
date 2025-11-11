@@ -5,7 +5,7 @@ namespace RedMist.TimingCommon.Extensions;
 
 public static class SessionExtensions
 {
-    private static readonly SessionStateMapper mapper = new();
+    private static readonly SessionStateMapperExt mapper = new();
 
     /// <summary>
     /// Converts a SessionState to a Payload with deep copying of CarPositions.
@@ -54,7 +54,7 @@ public static class SessionExtensions
 /// Mapper for SessionState objects using Mapperly code generation
 /// </summary>
 [Mapper(UseDeepCloning = true)]
-public partial class SessionStateMapper
+public partial class SessionStateMapperExt
 {
     /// <summary>
     /// Creates a deep copy of a SessionState object
