@@ -1,9 +1,12 @@
 ﻿using RedMist.TimingCommon.Models;
+using Riok.Mapperly.Abstractions;
 
 namespace RedMist.TimingCommon.Extensions;
 
 public static class SessionExtensions
 {
+    private static readonly SessionStateMapper mapper = new();
+
     /// <summary>
     /// Converts a SessionState to a Payload with deep copying of CarPositions.
     /// Non-matching fields are ignored, and EventEntryUpdates and CarPositionUpdates are left empty.
@@ -35,4 +38,26 @@ public static class SessionExtensions
             }
         };
     }
+
+    /// <summary>
+    /// Creates a deep copy of the specified <see cref="SessionState"/> instance.
+    /// </summary>
+    /// <param name="original">The <see cref="SessionState"/> object to copy. Cannot be null.</param>
+    /// <returns>A new <see cref="SessionState"/> instance that is a deep copy of <paramref name="original"/>.</returns>
+    public static SessionState DeepCopy(this SessionState original)
+    {
+        return mapper.CloneSessionState(original);
+    }
+}
+
+/// <summary>
+/// Mapper for SessionState objects using Mapperly code generation
+/// </summary>
+[Mapper(UseDeepCloning = true)]
+public partial class SessionStateMapper
+{
+    /// <summary>
+    /// Creates a deep copy of a SessionState object
+    /// </summary>
+    public partial SessionState CloneSessionState(SessionState source);
 }

@@ -2,6 +2,13 @@
 
 namespace RedMist.TimingCommon.Extensions;
 
+/// <summary>
+/// Provides extension methods for converting a Payload to a SessionState with deep copying of relevant fields.
+/// </summary>
+/// <remarks>Fields in SessionState that are not present in the Payload are initialized with their default values.
+/// EventEntryUpdates and CarPositionUpdates fields are intentionally ignored during conversion. This class is intended
+/// for scenarios where a complete SessionState representation is needed based on the available data in a
+/// Payload.</remarks>
 public static class PayloadExtensions
 {
     /// <summary>

@@ -12,7 +12,6 @@ namespace RedMist.PatchGenerator
     /// <summary>
     /// Source generator that creates patch class variants from classes marked with [GeneratePatch].
     /// Patch classes have all properties made nullable to support partial updates.
-    /// Also generates Mapperly mappers for efficient patch application.
     /// </summary>
     [Generator]
     public class PatchClassGenerator : IIncrementalGenerator
@@ -47,7 +46,7 @@ namespace RedMist.PatchGenerator
             if (context.TargetNode is not ClassDeclarationSyntax classDeclaration)
                 return null;
 
-            var classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration) as INamedTypeSymbol;
+            var classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration);
             if (classSymbol is null)
                 return null;
 
