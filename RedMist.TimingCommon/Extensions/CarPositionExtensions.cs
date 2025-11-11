@@ -1,9 +1,18 @@
 ﻿using RedMist.TimingCommon.Models;
+using Riok.Mapperly.Abstractions;
 
 namespace RedMist.TimingCommon.Extensions;
 
+/// <summary>
+/// Provides extension methods for creating deep copies of CarPosition instances and collections.
+/// </summary>
+/// <remarks>These extension methods use an auto-generated CarPositionMapper to perform deep cloning. If the
+/// mapper is unavailable, the methods fall back to manual copying. The class is static and intended for use with
+/// CarPosition objects to facilitate safe duplication without shared references.</remarks>
 public static class CarPositionExtensions
 {
+    private static readonly CarPositionMapper mapper = new();
+
     /// <summary>
     /// Creates a deep copy of a CarPosition using the auto-generated CarPositionMapper.
     /// If the mapper is not available, falls back to manual copying.
@@ -12,11 +21,7 @@ public static class CarPositionExtensions
     /// <returns>A deep copy of the CarPosition</returns>
     public static CarPosition DeepCopy(this CarPosition original)
     {
-        if (original == null) return new CarPosition();
-        var copy = new CarPosition();
-        var p = Models.Mappers.CarPositionMapper.CreatePatch(copy, original);
-        Models.Mappers.CarPositionMapper.ApplyPatch(p, copy);
-        return copy;
+        return mapper.CloneCarPosition(original);
     }
 
     /// <summary>
@@ -24,7 +29,23 @@ public static class CarPositionExtensions
     /// </summary>
     public static IEnumerable<CarPosition> DeepCopy(this IEnumerable<CarPosition> carPositions)
     {
-        ArgumentNullException.ThrowIfNull(carPositions);
-        return carPositions.Select(cp => cp.DeepCopy());
+        return mapper.CloneCarPositions(carPositions);
     }
+}
+
+/// <summary>
+/// Mapper for CarPosition objects using Mapperly code generation
+/// </summary>
+[Mapper(UseDeepCloning = true)]
+public partial class CarPositionMapper
+{
+    /// <summary>
+    /// Creates deep copies of a list of CarPosition objects
+    /// </summary>
+    public partial IEnumerable<CarPosition> CloneCarPositions(IEnumerable<CarPosition> source);
+
+    /// <summary>
+    /// Creates a deep copy of a CarPosition object
+    /// </summary>
+    public partial CarPosition CloneCarPosition(CarPosition source);
 }
