@@ -125,4 +125,19 @@ public class Organization
     [Key(14)]
     [MaxLength(512)]
     public string? OrbitsLogsPath { get; set; }
+
+    /// <summary>
+    /// Gets or sets the URL used to connect to the Flagtronics service.
+    /// Example: http://192.168.1.100:52733/api/driverid/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    /// </summary>
+    [Key(15)]
+    [MaxLength(512)]
+    public string FlagtronicsUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets the API key used to authenticate requests to the Flagtronics service.
+    /// </summary>
+    [Key(16)]
+    [MaxLength(42)]
+    public string FlagtronicsApiKey { get; } = string.Empty;
 }
