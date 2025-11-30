@@ -139,5 +139,5 @@ public class Organization
     /// </summary>
     [Key(16)]
     [MaxLength(42)]
-    public string FlagtronicsApiKey { get; } = string.Empty;
+    public string FlagtronicsApiKey { get; set; } = string.Empty;
 }
