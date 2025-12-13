@@ -1,4 +1,9 @@
+
 # RedMist TimingCommon
+
+[![Build](https://github.com/bgriggs/redmist-timing-common/actions/workflows/build.yml/badge.svg)](https://github.com/bgriggs/redmist-timing-common/actions/workflows/build.yml)
+[![.NET](https://img.shields.io/badge/.NET-9.0-purple)](https://dotnet.microsoft.com/download)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 A .NET library providing shared model classes the Red Mist Timing project. This can be used as a reference for building integrations with the Red Mist API.
 
