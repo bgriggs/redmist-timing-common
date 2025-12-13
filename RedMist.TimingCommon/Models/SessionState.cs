@@ -18,19 +18,19 @@ public class SessionState
     [MessagePack.Key(0)]
     public int EventId { get; set; }
     /// <summary>
-    /// Event name as indicated by the organizer.
+    /// Event name as provided by the organizer.
     /// </summary>
     [MaxLength(512)]
     [MessagePack.Key(1)]
     public string EventName { get; set; } = string.Empty;
     /// <summary>
     /// Session, or run, is the current part of the event being timed such as in individual race, practice, or qualifying session.
-    /// This is the ID indicated by the timing system.
+    /// This is the ID provided by the timing system.
     /// </summary>
     [MessagePack.Key(2)]
     public int SessionId { get; set; }
     /// <summary>
-    /// Session name as indicated by the timing system.
+    /// Session name as provided by the timing system.
     /// </summary>
     [MaxLength(40)]
     [MessagePack.Key(3)]
@@ -177,4 +177,10 @@ public class SessionState
     /// </summary>
     [MessagePack.Key(28)]
     public DateTime? LastUpdated { get; set; }
+    /// <summary>
+    /// Gets or sets the mapping of class names to their corresponding order values.
+    /// </summary>
+    [MessagePack.Key(29)]
+    [MaxLength(50)]
+    public Dictionary<string, string> ClassOrder { get; set; } = [];
 }
