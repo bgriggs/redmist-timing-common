@@ -76,13 +76,6 @@ public class Organization
     public string ControlLogParams { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the Orbits timing system configuration. 
-    /// This will be removed in future versions. Use the fields directly in the Organization class instead.
-    /// </summary>
-    [Key(8)]
-    public OrbitsConfiguration Orbits { get; set; } = new OrbitsConfiguration();
-
-    /// <summary>
     /// Gets or sets the X2 decoder server configuration.
     /// </summary>
     [Key(9)]
@@ -140,4 +133,40 @@ public class Organization
     [Key(16)]
     [MaxLength(42)]
     public string FlagtronicsApiKey { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Class definitions.
+    /// </summary>
+    [Key(17)]
+    public List<ClassMetadata> Classes { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets a value indicating whether multiloop connections are displayed in the relay connections list.
+    /// </summary>
+    [Key(18)]
+    public bool ShowMultiloopConnection { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether Orbits logs connections are displayed in the relay connections list.
+    /// </summary>
+    [Key(19)]
+    public bool ShowOrbitsLogsConnection { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether control log connections are displayed in the relay connections list.
+    /// </summary>
+    [Key(20)]
+    public bool ShowControlLogConnection { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the X2 connection is displayed in the relay connections list.
+    /// </summary>
+    [Key(21)]
+    public bool ShowX2Connection { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the Flagtronics connection is displayed in the relay connections list.
+    /// </summary>
+    [Key(22)]
+    public bool ShowFlagtronicsConnection { get; set; } = true;
 }
