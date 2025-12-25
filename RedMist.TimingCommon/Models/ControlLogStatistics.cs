@@ -22,7 +22,7 @@ public class ControlLogStatistics
     public int TotalEntries { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the log apears to be left over from a previous event.
+    /// Gets or sets a value indicating whether the log appears to be left over from a previous event.
     /// </summary>
     [Key(2)]
     public bool IsStaleWarning { get; set; }

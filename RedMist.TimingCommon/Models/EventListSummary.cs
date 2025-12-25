@@ -75,4 +75,18 @@ public class EventListSummary
     [JsonPropertyName("s")]
     [Key(7)]
     public EventSchedule? Schedule { get; set; }
+
+    /// <summary>
+    /// Indicates whether this is a real event or a simulation/replay/test event.
+    /// </summary>
+    [MessagePack.Key(8)]
+    [JsonPropertyName("sim")]
+    public bool IsSimulation { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this session is historical or archived.
+    /// </summary>
+    [MessagePack.Key(9)]
+    [JsonPropertyName("arch")]
+    public bool IsArchived { get; set; }
 }

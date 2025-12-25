@@ -2,14 +2,14 @@
 # RedMist TimingCommon
 
 [![Build](https://github.com/bgriggs/redmist-timing-common/actions/workflows/build.yml/badge.svg)](https://github.com/bgriggs/redmist-timing-common/actions/workflows/build.yml)
-[![.NET](https://img.shields.io/badge/.NET-9.0-purple)](https://dotnet.microsoft.com/download)
+[![.NET](https://img.shields.io/badge/.NET-10.0-purple)](https://dotnet.microsoft.com/download)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 A .NET library providing shared model classes the Red Mist Timing project. This can be used as a reference for building integrations with the Red Mist API.
 
 ## Overview
 
-RedMist.TimingCommon is a shared library that defines the core data models, serialization attributes, and code generation utilities used across Red Mist Timing applications. It provides a strongly-typed API for representing racing events, sessions, car positions, timing data, and configuration metadata. Most objects support JSON and MessagePack serialization. This package is also avilable on nuget at https://www.nuget.org/packages/RedMist.TimingCommon/
+RedMist.TimingCommon is a shared library that defines the core data models, serialization attributes, and code generation utilities used across Red Mist Timing applications. It provides a strongly-typed API for representing racing events, sessions, car positions, timing data, and configuration metadata. Most objects support JSON and MessagePack serialization. This package is also available on nuget at https://www.nuget.org/packages/RedMist.TimingCommon/
 
 ## Features
 
@@ -25,7 +25,7 @@ RedMist.TimingCommon is a shared library that defines the core data models, seri
 
 ## Target Frameworks
 
-- .NET 9.0
+- .NET 10.0
 - .NET Standard 2.0 (for source generators)
 
 ## Projects

@@ -183,4 +183,14 @@ public class SessionState
     [MessagePack.Key(29)]
     [MaxLength(50)]
     public Dictionary<string, string> ClassOrder { get; set; } = [];
+    /// <summary>
+    /// Indicates whether this is a real event or a simulation/replay/test event.
+    /// </summary>
+    [MessagePack.Key(30)]
+    public bool IsSimulation { get; set; }
+    /// <summary>
+    /// Gets or sets a value indicating whether this session is historical or archived.
+    /// </summary>
+    [MessagePack.Key(31)]
+    public bool IsArchived { get; set; }
 }
