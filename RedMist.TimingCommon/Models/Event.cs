@@ -136,4 +136,14 @@ public class Event
     [JsonPropertyName("il")]
     [Key(14)]
     public bool IsLive { get; set; }
+    /// <summary>
+    /// Indicates whether this is a real event or a simulation/replay/test event.
+    /// </summary>
+    [MessagePack.Key(15)]
+    public bool IsSimulation { get; set; }
+    /// <summary>
+    /// Gets or sets a value indicating whether this session is historical or archived.
+    /// </summary>
+    [MessagePack.Key(16)]
+    public bool IsArchived { get; set; }
 }

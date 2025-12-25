@@ -122,4 +122,18 @@ public class Event
     [Key(15)]
     [Required]
     public bool IsDeleted { get; set; } = false;
+
+    /// <summary>
+    /// Indicates whether this is a real event or a simulation/replay/test event.
+    /// </summary>
+    [MessagePack.Key(16)]
+    [Required]
+    public bool IsSimulation { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this session is historical or archived.
+    /// </summary>
+    [MessagePack.Key(17)]
+    [Required]
+    public bool IsArchived { get; set; }
 }
