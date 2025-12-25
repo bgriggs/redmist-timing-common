@@ -44,7 +44,7 @@ public class ControlLogEntry
     public string Car1 { get; set; } = string.Empty;
     
     /// <summary>
-    /// Gets or sets a value indicating whether the first car is highlighted, indicating who to apply a penality or at fault.
+    /// Gets or sets a value indicating whether the first car is highlighted, indicating who to apply a penalty or at fault.
     /// </summary>
     [JsonPropertyName("c1h")]
     [Key(4)]
@@ -60,7 +60,7 @@ public class ControlLogEntry
     public string Car2 { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the second car is highlighted, indicating who to apply a penality or at fault.
+    /// Gets or sets a value indicating whether the second car is highlighted, indicating who to apply a penalty or at fault.
     /// </summary>
     [JsonPropertyName("c2h")]
     [Key(6)]
@@ -91,7 +91,7 @@ public class ControlLogEntry
     [JsonPropertyName("a")]
     [Key(9)]
     [MaxLength(30)]
-    public string PenalityAction { get; set; } = string.Empty;
+    public string PenaltyAction { get; set; } = string.Empty;
     
     /// <summary>
     /// Gets or sets additional notes or remarks.
