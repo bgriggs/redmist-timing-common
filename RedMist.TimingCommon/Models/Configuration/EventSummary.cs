@@ -35,4 +35,16 @@ public class EventSummary
     /// </summary>
     [Key(3)]
     public bool IsActive { get; set; }
+
+    /// <summary>
+    /// Indicates whether this is a real event or a simulation/replay/test event.
+    /// </summary>
+    [Key(4)]
+    public bool IsSimulation { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this session is historical or archived.
+    /// </summary>
+    [Key(5)]
+    public bool IsArchived { get; set; }
 }
