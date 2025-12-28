@@ -1,5 +1,5 @@
 
-# RedMist TimingCommon
+# Red Mist: Timing Common
 
 [![Build](https://github.com/bgriggs/redmist-timing-common/actions/workflows/build.yml/badge.svg)](https://github.com/bgriggs/redmist-timing-common/actions/workflows/build.yml)
 [![.NET](https://img.shields.io/badge/.NET-10.0-purple)](https://dotnet.microsoft.com/download)
