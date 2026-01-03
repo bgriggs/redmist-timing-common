@@ -1,8 +1,9 @@
 ﻿using MessagePack;
+using RedMist.TimingCommon.Models.Configuration;
 using System.ComponentModel.DataAnnotations;
 using KeyAttribute = MessagePack.KeyAttribute;
 
-namespace RedMist.TimingCommon.Models.Configuration;
+namespace RedMist.TimingCommon.Models;
 
 /// <summary>
 /// Represents an organization, series, or league that hosts racing events, including configuration for timing systems and branding.
@@ -88,14 +89,14 @@ public class Organization
     [Key(10)]
     [MaxLength(40)]
     public string? RMonitorIp { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the port number for the RMonitor timing system.
     /// Default is 50000.
     /// </summary>
     [Key(11)]
     public int RMonitorPort { get; set; } = 50000;
-    
+
     /// <summary>
     /// Gets or sets the IP address for the Multiloop timing system, or <c>null</c> if not configured.
     /// Maximum length: 40 characters.
@@ -103,14 +104,14 @@ public class Organization
     [Key(12)]
     [MaxLength(40)]
     public string? MultiloopIp { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the port number for the Multiloop timing system.
     /// Default is 50004.
     /// </summary>
     [Key(13)]
     public int MultiloopPort { get; set; } = 50004;
-    
+
     /// <summary>
     /// Gets or sets the file system path to Orbits logs, or <c>null</c> if not configured.
     /// Maximum length: 512 characters.
@@ -169,4 +170,17 @@ public class Organization
     /// </summary>
     [Key(22)]
     public bool ShowFlagtronicsConnection { get; set; } = true;
+
+    /// <summary>
+    /// Last relay version that connected.
+    /// </summary>
+    [Key(23)]
+    [MaxLength(18)]
+    public string RelayVersion { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the date and time when the relay was last successfully connected.
+    /// </summary>
+    [Key(24)]
+    public DateTime? RelayLastConnected { get; set; }
 }
