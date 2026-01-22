@@ -43,32 +43,32 @@ public class LoopMetadata
 public enum LoopType
 {
     /// <summary>
-    /// Start/Finish line timing loop.
+    /// Start/Finish line timing loop. Value: 0
     /// </summary>
     StartFinish,
     
     /// <summary>
-    /// Pit lane entry timing loop.
+    /// Pit lane entry timing loop. Value: 1
     /// </summary>
     PitIn,
-    
+
     /// <summary>
-    /// Pit lane exit timing loop.
+    /// Pit lane exit timing loop. Value: 2
     /// </summary>
     PitExit,
-    
+
     /// <summary>
-    /// Pit lane start/finish timing loop.
+    /// Pit lane start/finish timing loop. Value: 3
     /// </summary>
     PitStartFinish,
-    
+
     /// <summary>
-    /// Other pit related timing loop.
+    /// Other pit related timing loop. Value: 4
     /// </summary>
     PitOther,
-    
+
     /// <summary>
-    /// Other type of timing loop not otherwise categorized.
+    /// Other type of timing loop not otherwise categorized. Value: 5
     /// </summary>
     Other
 }
