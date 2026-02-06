@@ -146,4 +146,9 @@ public class Event
     /// </summary>
     [MessagePack.Key(16)]
     public bool IsArchived { get; set; }
+    /// <summary>
+    /// Organization that owns the event.
+    /// </summary>
+    [MessagePack.Key(17)]
+    public int OrganizationId { get; set; }
 }
