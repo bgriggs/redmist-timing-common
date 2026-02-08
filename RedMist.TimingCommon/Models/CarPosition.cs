@@ -341,4 +341,22 @@ public class CarPosition
     [JsonPropertyName("iw")]
     [MessagePack.Key(50)]
     public bool ImpactWarning { get; set; }
+    /// <summary>
+    /// Indicates this car has the fastest moving average lap time in its class (last 5 laps).
+    /// </summary>
+    [JsonPropertyName("faic")]
+    [MessagePack.Key(51)]
+    public bool InClassFastestAveragePace { get; set; }
+    /// <summary>
+    /// Estimated temperature of the track in degrees Fahrenheit.
+    /// </summary>
+    [JsonPropertyName("temp")]
+    [MessagePack.Key(52)]
+    public int? TrackTempDegF { get; set; }
+    /// <summary>
+    /// Estimated precipitation on the track as a percentage. Value of 0 means no chance of precipitation, 100 means certain precipitation.
+    /// </summary>
+    [JsonPropertyName("precip")]
+    [MessagePack.Key(53)]
+    public int? TrackPrecipitationPerc { get; set; }
 }
