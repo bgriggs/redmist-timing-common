@@ -1,6 +1,6 @@
 ﻿using MessagePack;
-using System.ComponentModel.DataAnnotations;
 using RedMist.TimingCommon.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace RedMist.TimingCommon.Models;
 
@@ -193,4 +193,14 @@ public class SessionState
     /// </summary>
     [MessagePack.Key(31)]
     public bool IsArchived { get; set; }
+    /// <summary>
+    /// Estimated temperature of the track in degrees Fahrenheit.
+    /// </summary>
+    [MessagePack.Key(32)]
+    public int? TrackTempDegF { get; set; }
+    /// <summary>
+    /// Estimated precipitation on the track as a percentage. Value of 0 means no chance of precipitation, 100 means certain precipitation.
+    /// </summary>
+    [MessagePack.Key(33)]
+    public int? TrackPrecipitationPerc { get; set; }
 }

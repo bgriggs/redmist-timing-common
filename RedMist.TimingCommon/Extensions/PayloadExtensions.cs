@@ -1,4 +1,5 @@
-﻿using RedMist.TimingCommon.Models;
+﻿#pragma warning disable CS0618
+using RedMist.TimingCommon.Models;
 
 namespace RedMist.TimingCommon.Extensions;
 
@@ -60,3 +61,4 @@ public static class PayloadExtensions
         return sessionState;
     }
 }
+#pragma warning restore CS0618

@@ -1,8 +1,8 @@
-﻿using RedMist.TimingCommon.Models;
+﻿#pragma warning disable CS0618
+using RedMist.TimingCommon.Models;
 using Riok.Mapperly.Abstractions;
 
 namespace RedMist.TimingCommon.Extensions;
-
 public static class SessionExtensions
 {
     private static readonly SessionStateMapperExt mapper = new();
@@ -61,3 +61,5 @@ public partial class SessionStateMapperExt
     /// </summary>
     public partial SessionState CloneSessionState(SessionState source);
 }
+
+#pragma warning restore CS0618
