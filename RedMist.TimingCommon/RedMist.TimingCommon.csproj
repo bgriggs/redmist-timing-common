@@ -30,6 +30,6 @@
 	</ItemGroup>
 
 	<Target Name="GenerateTypeScript" AfterTargets="Build">
-		<Exec Command="dotnet-typegen generate" WorkingDirectory="$(ProjectDir)" />
+		<Exec Command="dotnet tool run dotnet-typegen generate" WorkingDirectory="$(ProjectDir)" />
 	</Target>
 </Project>
