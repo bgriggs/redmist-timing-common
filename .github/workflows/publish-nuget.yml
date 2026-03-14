@@ -21,6 +21,8 @@ jobs:
           dotnet-version: '10.0.x'
       - name: Restore dependencies
         run: dotnet restore
+      - name: Restore dotnet tools
+        run: dotnet tool restore
       - name: Build
         run: dotnet build RedMist.TimingCommon/RedMist.TimingCommon.csproj --no-restore --configuration Release
       - name: Create the package
