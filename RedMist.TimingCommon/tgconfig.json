@@ -1,0 +1,10 @@
+{
+  "generationSpecs": [
+    "RedMist.TimingCommon.TypeScript.SessionStateGenerationSpec"
+  ],
+  "outputPath": "TypeScript/generated",
+  "csNullableTranslation": "null",
+  "customTypeMappings": {
+    "System.TimeOnly": "string"
+  }
+}
