@@ -47,4 +47,10 @@ public class EventSummary
     /// </summary>
     [Key(5)]
     public bool IsArchived { get; set; }
+
+    /// <summary>
+    /// Gets or sets the end date and time of the event.
+    /// </summary>
+    [Key(6)]
+    public DateTime EndDate { get; set; }
 }
