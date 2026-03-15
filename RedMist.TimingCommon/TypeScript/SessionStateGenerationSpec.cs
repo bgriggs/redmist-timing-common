@@ -1,43 +1,50 @@
 using TypeGen.Core.SpecGeneration;
 using RedMist.TimingCommon.Models;
 using RedMist.TimingCommon.Models.InCarVideo;
+using RedMist.TimingCommon.Models.Configuration;
 
 namespace RedMist.TimingCommon.TypeScript;
 
 /// <summary>
 /// TypeGen generation spec for SessionState and all nested/referenced types.
-/// Run \redmist-timing-common\RedMist.TimingCommon\dotnet-typegen generate
+/// Run "dotnet tool run dotnet-typegen generate" from the project directory to regenerate TypeScript files.
 /// </summary>
 public class SessionStateGenerationSpec : GenerationSpec
 {
+    private static readonly Type[] InterfaceTypes =
+    [
+        typeof(SessionState),
+        typeof(EventEntry),
+        typeof(CarPosition),
+        typeof(FlagDuration),
+        typeof(Section),
+        typeof(Announcement),
+        typeof(CompletedSection),
+        typeof(EventListSummary),
+        typeof(Models.Event),
+        typeof(Session),
+        typeof(CompetitorMetadata),
+        typeof(ControlLogEntry),
+        typeof(CarControlLogs),
+        typeof(SessionStatePatch),
+        typeof(CarPositionPatch),
+        typeof(VideoStatus),
+        typeof(VideoDestination),
+        typeof(BroadcasterConfig),
+        typeof(EventSchedule),
+        typeof(EventScheduleEntry),
+    ];
+
     public override void OnBeforeGeneration(OnBeforeGenerationArgs args)
     {
-        // Core session types
-        AddInterface<SessionState>();
-        AddInterface<EventEntry>();
-        AddInterface<CarPosition>();
-        AddInterface<FlagDuration>();
-        AddInterface<Section>();
-        AddInterface<Announcement>();
-        AddInterface<CompletedSection>();
-        AddInterface<EventListSummary>();
-        AddInterface<Event>();
-        AddInterface<Session>();
-        AddInterface<CompetitorMetadata>();
-        AddInterface<ControlLogEntry>();
-        AddInterface<CarControlLogs>();
-
-        // Patches
-        AddInterface<SessionStatePatch>();
-        AddInterface<CarPositionPatch>();
+        foreach (var type in InterfaceTypes)
+            AddInterface(type);
 
         // Enums
         AddEnum<Flags>();
-
-        // In-car video types
-        AddInterface<VideoStatus>();
-        AddInterface<VideoDestination>();
         AddEnum<VideoSystemType>();
         AddEnum<VideoDestinationType>();
+
+        DecodeGenerator.Generate(InterfaceTypes, "TypeScript/generated");
     }
 }

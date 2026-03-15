@@ -6,13 +6,13 @@
 /**
  * Details about the broadcaster of the event.
  */
-export class BroadcasterConfig {
+export interface BroadcasterConfig {
     /**
      * Name of the Broadcaster company.
      */
-    companyName: string = "";
+    companyName: string;
     /**
      * Gets or sets the URL where the broadcast is located.
      */
-    url: string = "";
+    url: string;
 }
