@@ -89,4 +89,11 @@ public class EventListSummary
     [MessagePack.Key(9)]
     [JsonPropertyName("arch")]
     public bool IsArchived { get; set; }
+
+    /// <summary>
+    /// Whether there are available session results for this event. This is used to determine whether to show a "Results" button in the UI.
+    /// </summary>
+    [MessagePack.Key(10)]
+    [JsonPropertyName("hasResults")]
+    public bool HasResults { get; set; }
 }
