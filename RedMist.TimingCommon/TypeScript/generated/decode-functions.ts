@@ -182,6 +182,7 @@ export function decodeEventListSummary(a: unknown[]): EventListSummary {
         schedule: a[7] != null ? decodeEventSchedule(a[7] as unknown[]) : null,
         isSimulation: a[8] as boolean,
         isArchived: a[9] as boolean,
+        hasResults: a[10] as boolean,
     };
 }
 
