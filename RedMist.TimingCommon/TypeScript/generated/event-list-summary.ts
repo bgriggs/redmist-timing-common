@@ -53,4 +53,8 @@ export interface EventListSummary {
      * Gets or sets a value indicating whether this session is historical or archived.
      */
     isArchived: boolean;
+    /**
+     * Whether there are available session results for this event. This is used to determine whether to show a "Results" button in the UI.
+     */
+    hasResults: boolean;
 }
