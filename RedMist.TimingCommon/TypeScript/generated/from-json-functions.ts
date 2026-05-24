@@ -183,6 +183,8 @@ export function eventListSummaryFromJson(json: Record<string, unknown>): EventLi
         isSimulation: json['sim'] as boolean,
         isArchived: json['arch'] as boolean,
         hasResults: json['hasResults'] as boolean,
+        isPrivate: json['priv'] as boolean,
+        hideName: json['hn'] as boolean,
     };
 }
 
@@ -206,6 +208,8 @@ export function eventFromJson(json: Record<string, unknown>): Event {
         isSimulation: json['isSimulation'] as boolean,
         isArchived: json['isArchived'] as boolean,
         organizationId: json['organizationId'] as number,
+        isPrivate: json['priv'] as boolean,
+        hideName: json['hn'] as boolean,
     };
 }
 

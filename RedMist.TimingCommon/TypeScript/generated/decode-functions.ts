@@ -183,6 +183,8 @@ export function decodeEventListSummary(a: unknown[]): EventListSummary {
         isSimulation: a[8] as boolean,
         isArchived: a[9] as boolean,
         hasResults: a[10] as boolean,
+        isPrivate: a[11] as boolean,
+        hideName: a[12] as boolean,
     };
 }
 
@@ -206,6 +208,8 @@ export function decodeEvent(a: unknown[]): Event {
         isSimulation: a[15] as boolean,
         isArchived: a[16] as boolean,
         organizationId: a[17] as number,
+        isPrivate: a[18] as boolean,
+        hideName: a[19] as boolean,
     };
 }
 

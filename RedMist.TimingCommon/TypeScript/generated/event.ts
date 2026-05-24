@@ -93,4 +93,13 @@ export interface Event {
      * Organization that owns the event.
      */
     organizationId: number;
+    /**
+     * Gets or sets a value indicating whether this event is private and requires an access code to view timing data.
+     */
+    isPrivate: boolean;
+    /**
+     * Gets or sets a value indicating whether the event name is hidden.
+     * When true, @see {@link RedMist.TimingCommon.Models.Event.EventName} will be empty in API responses and clients should render their own placeholder.
+     */
+    hideName: boolean;
 }

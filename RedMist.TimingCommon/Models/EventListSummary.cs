@@ -96,4 +96,19 @@ public class EventListSummary
     [MessagePack.Key(10)]
     [JsonPropertyName("hasResults")]
     public bool HasResults { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this event is private and requires an access code to view timing data.
+    /// </summary>
+    [MessagePack.Key(11)]
+    [JsonPropertyName("priv")]
+    public bool IsPrivate { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the event name is hidden.
+    /// When true, <see cref="EventName"/> will be empty in listings and clients should render their own placeholder.
+    /// </summary>
+    [MessagePack.Key(12)]
+    [JsonPropertyName("hn")]
+    public bool HideName { get; set; }
 }
