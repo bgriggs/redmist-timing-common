@@ -13,7 +13,6 @@ public class Event
     /// <summary>
     /// Gets or sets the unique identifier for this event.
     /// </summary>
-    [System.ComponentModel.DataAnnotations.Key]
     [Key(0)]
     public int Id { get; set; }
     
@@ -136,4 +135,27 @@ public class Event
     [MessagePack.Key(17)]
     [Required]
     public bool IsArchived { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this event is private and requires an access code to view.
+    /// </summary>
+    [MessagePack.Key(18)]
+    [Required]
+    public bool IsPrivate { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the event name should be hidden from public responses.
+    /// When true, listings and event details return an empty name; consumers should display their own placeholder.
+    /// </summary>
+    [MessagePack.Key(19)]
+    [Required]
+    public bool HideName { get; set; }
+
+    /// <summary>
+    /// Gets or sets the 1-7 digit numeric access code required to view a private event.
+    /// Null when <see cref="IsPrivate"/> is false.
+    /// </summary>
+    [MessagePack.Key(20)]
+    [MaxLength(7)]
+    public string? AccessCode { get; set; }
 }

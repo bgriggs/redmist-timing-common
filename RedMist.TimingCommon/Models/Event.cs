@@ -151,4 +151,19 @@ public class Event
     /// </summary>
     [MessagePack.Key(17)]
     public int OrganizationId { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this event is private and requires an access code to view timing data.
+    /// </summary>
+    [JsonPropertyName("priv")]
+    [MessagePack.Key(18)]
+    public bool IsPrivate { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the event name is hidden.
+    /// When true, <see cref="EventName"/> will be empty in API responses and clients should render their own placeholder.
+    /// </summary>
+    [JsonPropertyName("hn")]
+    [MessagePack.Key(19)]
+    public bool HideName { get; set; }
 }

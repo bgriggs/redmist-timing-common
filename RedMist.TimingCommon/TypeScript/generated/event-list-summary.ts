@@ -57,4 +57,13 @@ export interface EventListSummary {
      * Whether there are available session results for this event. This is used to determine whether to show a "Results" button in the UI.
      */
     hasResults: boolean;
+    /**
+     * Gets or sets a value indicating whether this event is private and requires an access code to view timing data.
+     */
+    isPrivate: boolean;
+    /**
+     * Gets or sets a value indicating whether the event name is hidden.
+     * When true, @see {@link RedMist.TimingCommon.Models.EventListSummary.EventName} will be empty in listings and clients should render their own placeholder.
+     */
+    hideName: boolean;
 }
