@@ -158,4 +158,18 @@ public class Event
     [MessagePack.Key(20)]
     [MaxLength(7)]
     public string? AccessCode { get; set; }
+
+    /// <summary>
+    /// Gets or sets how this event's timing data is produced. Defaults to <see cref="TimingSource.Relay"/>.
+    /// </summary>
+    [MessagePack.Key(21)]
+    [Required]
+    public TimingSource TimingSource { get; set; }
+
+    /// <summary>
+    /// Gets or sets opaque, source-specific configuration for an external timing source.
+    /// Interpreted only by the external source service; null for relay events.
+    /// </summary>
+    [MessagePack.Key(22)]
+    public string? ExternalConfig { get; set; }
 }
