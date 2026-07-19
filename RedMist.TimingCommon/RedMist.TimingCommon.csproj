@@ -16,7 +16,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MessagePack" Version="3.1.7" />
+		<PackageReference Include="MessagePack" Version="3.1.8" />
 		<PackageReference Include="Riok.Mapperly" Version="4.3.1" />
 		<PackageReference Include="TypeGen" Version="7.0.0" />
 	</ItemGroup>
