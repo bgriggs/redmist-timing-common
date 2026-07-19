@@ -40,4 +40,20 @@ export enum Flags {
      * Purple 60kph. Value: 8
      */
     Purple60 = 8,
+    /**
+     * Faster car approaching. Value: 9
+     */
+    Blue = 9,
+    /**
+     * Black with orange ball, mechanical problem. Value: 10
+     */
+    MeatBall = 10,
+    /**
+     * Debris on track. Value: 11
+     */
+    Debris = 11,
+    /**
+     * Waving yellow, local caution. Yellow is used for standing yellow. Value: 12
+     */
+    WavingYellow = 12,
 }

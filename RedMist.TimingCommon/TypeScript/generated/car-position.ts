@@ -233,4 +233,35 @@ export interface CarPosition {
      * Estimated precipitation on the track as a percentage. Value of 0 means no chance of precipitation, 100 means certain precipitation.
      */
     trackPrecipitationPerc: number | null;
+    /**
+     * Last reported speed of the car in MPH. Null if not supported by the timing system or no valid GPS.
+     */
+    speedMph: number | null;
+    /**
+     * Time the car entered the pits in UTC. Null until the first pit stop or if not supported by the timing system.
+     */
+    pitEntryTime: Date | null;
+    /**
+     * Duration of the pit stop in milliseconds. While the car is in the pits, this is the elapsed time so far.
+     * Null until the first pit stop or if not supported by the timing system.
+     */
+    pitDurationMs: number | null;
+    /**
+     * Car has an active speed violation. Requires specific in-car equipment.
+     */
+    speedViolation: boolean;
+    /**
+     * Car is currently in a speed-enforced pit zone. Requires specific in-car equipment.
+     */
+    pitSpeedEnforced: boolean;
+    /**
+     * Track zone the car is currently in: 1-127 on-track, 0 uninitialized, 128+ pit/paddock/reserved.
+     * Requires specific in-car equipment.
+     */
+    flaggingZone: number | null;
+    /**
+     * Method used to identify the current driver, e.g. blePuck, rfidHelmet, manualOverride, none.
+     * Null if not supported by the timing system.
+     */
+    driverSource: string | null;
 }

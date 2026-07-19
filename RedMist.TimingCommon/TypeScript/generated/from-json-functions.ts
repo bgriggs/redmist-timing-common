@@ -132,6 +132,13 @@ export function carPositionFromJson(json: Record<string, unknown>): CarPosition 
         inClassFastestAveragePace: json['faic'] as boolean,
         trackTempDegF: json['temp'] as number | null,
         trackPrecipitationPerc: json['precip'] as number | null,
+        speedMph: json['spd'] as number | null,
+        pitEntryTime: json['pet'] as Date | null,
+        pitDurationMs: json['pdm'] as number | null,
+        speedViolation: json['sv'] as boolean,
+        pitSpeedEnforced: json['pse'] as boolean,
+        flaggingZone: json['fz'] as number | null,
+        driverSource: json['ds'] as string,
     };
 }
 
@@ -366,6 +373,13 @@ export function carPositionPatchFromJson(json: Record<string, unknown>): CarPosi
         inClassFastestAveragePace: json['inClassFastestAveragePace'] as boolean | null,
         trackTempDegF: json['trackTempDegF'] as number | null,
         trackPrecipitationPerc: json['trackPrecipitationPerc'] as number | null,
+        speedMph: json['speedMph'] as number | null,
+        pitEntryTime: json['pitEntryTime'] as Date | null,
+        pitDurationMs: json['pitDurationMs'] as number | null,
+        speedViolation: json['speedViolation'] as boolean | null,
+        pitSpeedEnforced: json['pitSpeedEnforced'] as boolean | null,
+        flaggingZone: json['flaggingZone'] as number | null,
+        driverSource: json['driverSource'] as string,
     };
 }
 
