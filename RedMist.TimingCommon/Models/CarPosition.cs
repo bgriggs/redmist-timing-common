@@ -359,4 +359,50 @@ public class CarPosition
     [JsonPropertyName("precip")]
     [MessagePack.Key(53)]
     public int? TrackPrecipitationPerc { get; set; }
+    /// <summary>
+    /// Last reported speed of the car in MPH. Null if not supported by the timing system or no valid GPS.
+    /// </summary>
+    [JsonPropertyName("spd")]
+    [MessagePack.Key(54)]
+    public int? SpeedMph { get; set; }
+    /// <summary>
+    /// Time the car entered the pits in UTC. Null until the first pit stop or if not supported by the timing system.
+    /// </summary>
+    [JsonPropertyName("pet")]
+    [MessagePack.Key(55)]
+    public DateTime? PitEntryTime { get; set; }
+    /// <summary>
+    /// Duration of the pit stop in milliseconds. While the car is in the pits, this is the elapsed time so far.
+    /// Null until the first pit stop or if not supported by the timing system.
+    /// </summary>
+    [JsonPropertyName("pdm")]
+    [MessagePack.Key(56)]
+    public int? PitDurationMs { get; set; }
+    /// <summary>
+    /// Car has an active speed violation. Requires specific in-car equipment.
+    /// </summary>
+    [JsonPropertyName("sv")]
+    [MessagePack.Key(57)]
+    public bool SpeedViolation { get; set; }
+    /// <summary>
+    /// Car is currently in a speed-enforced pit zone. Requires specific in-car equipment.
+    /// </summary>
+    [JsonPropertyName("pse")]
+    [MessagePack.Key(58)]
+    public bool PitSpeedEnforced { get; set; }
+    /// <summary>
+    /// Track zone the car is currently in: 1-127 on-track, 0 uninitialized, 128+ pit/paddock/reserved.
+    /// Requires specific in-car equipment.
+    /// </summary>
+    [JsonPropertyName("fz")]
+    [MessagePack.Key(59)]
+    public int? FlaggingZone { get; set; }
+    /// <summary>
+    /// Method used to identify the current driver, e.g. blePuck, rfidHelmet, manualOverride, none.
+    /// Null if not supported by the timing system.
+    /// </summary>
+    [JsonPropertyName("ds")]
+    [MessagePack.Key(60)]
+    [MaxLength(16)]
+    public string? DriverSource { get; set; }
 }

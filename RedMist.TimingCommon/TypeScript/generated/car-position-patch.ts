@@ -228,4 +228,32 @@ export interface CarPositionPatch {
      * Patch field for TrackPrecipitationPerc. Null indicates no change.
      */
     trackPrecipitationPerc: number | null;
+    /**
+     * Patch field for SpeedMph. Null indicates no change.
+     */
+    speedMph: number | null;
+    /**
+     * Patch field for PitEntryTime. Null indicates no change.
+     */
+    pitEntryTime: Date | null;
+    /**
+     * Patch field for PitDurationMs. Null indicates no change.
+     */
+    pitDurationMs: number | null;
+    /**
+     * Patch field for SpeedViolation. Null indicates no change.
+     */
+    speedViolation: boolean | null;
+    /**
+     * Patch field for PitSpeedEnforced. Null indicates no change.
+     */
+    pitSpeedEnforced: boolean | null;
+    /**
+     * Patch field for FlaggingZone. Null indicates no change.
+     */
+    flaggingZone: number | null;
+    /**
+     * Patch field for DriverSource. Null indicates no change.
+     */
+    driverSource: string | null;
 }

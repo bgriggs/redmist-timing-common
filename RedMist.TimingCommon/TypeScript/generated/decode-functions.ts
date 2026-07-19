@@ -132,6 +132,13 @@ export function decodeCarPosition(a: unknown[]): CarPosition {
         inClassFastestAveragePace: a[51] as boolean,
         trackTempDegF: a[52] as number | null,
         trackPrecipitationPerc: a[53] as number | null,
+        speedMph: a[54] as number | null,
+        pitEntryTime: a[55] as Date | null,
+        pitDurationMs: a[56] as number | null,
+        speedViolation: a[57] as boolean,
+        pitSpeedEnforced: a[58] as boolean,
+        flaggingZone: a[59] as number | null,
+        driverSource: a[60] as string,
     };
 }
 
@@ -366,6 +373,13 @@ export function decodeCarPositionPatch(a: unknown[]): CarPositionPatch {
         inClassFastestAveragePace: a[51] as boolean | null,
         trackTempDegF: a[52] as number | null,
         trackPrecipitationPerc: a[53] as number | null,
+        speedMph: a[54] as number | null,
+        pitEntryTime: a[55] as Date | null,
+        pitDurationMs: a[56] as number | null,
+        speedViolation: a[57] as boolean | null,
+        pitSpeedEnforced: a[58] as boolean | null,
+        flaggingZone: a[59] as number | null,
+        driverSource: a[60] as string,
     };
 }
 
