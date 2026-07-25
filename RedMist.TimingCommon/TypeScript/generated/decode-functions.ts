@@ -78,6 +78,8 @@ export function decodeEventEntry(a: unknown[]): EventEntry {
 export function decodeCarPosition(a: unknown[]): CarPosition {
     return {
         invalidPosition: -999,
+        invalidSpeed: -999,
+        invalidTrackPosition: -999,
         eventId: a[0] as string,
         sessionId: a[1] as string,
         number: a[2] as string,

@@ -78,6 +78,8 @@ export function eventEntryFromJson(json: Record<string, unknown>): EventEntry {
 export function carPositionFromJson(json: Record<string, unknown>): CarPosition {
     return {
         invalidPosition: -999,
+        invalidSpeed: -999,
+        invalidTrackPosition: -999,
         eventId: json['eid'] as string,
         sessionId: json['sid'] as string,
         number: json['n'] as string,

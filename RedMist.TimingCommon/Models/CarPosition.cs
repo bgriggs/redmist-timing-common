@@ -17,6 +17,8 @@ public class CarPosition
     /// Used to indicate position information is not available.
     /// </summary>
     public const int InvalidPosition = -999;
+    public const int InvalidSpeed = -999;
+    public const int InvalidTrackPosition = -999;
 
     /// <summary>
     /// Redmist Event ID.
@@ -78,28 +80,32 @@ public class CarPosition
     [MessagePack.Key(8)]
     public bool IsBestTimeClass { get; set; }
     /// <summary>
-    /// Time to the next car in the same class formatted as HH:mm:ss.fff.
+    /// Time to the next car in the same class formatted as s.fff, m:ss.fff or h:mm:ss.fff. When the cars
+    /// are on different laps this is the number of laps instead, e.g. "2 laps". Empty for the class leader.
     /// </summary>
     [JsonPropertyName("cg")]
     [MaxLength(12)]
     [MessagePack.Key(9)]
     public string? InClassGap { get; set; }
     /// <summary>
-    /// Time to the in-class leader formatted as HH:mm:ss.fff.
+    /// Time to the in-class leader formatted as s.fff, m:ss.fff or h:mm:ss.fff. When the cars are on
+    /// different laps this is the number of laps instead, e.g. "2 laps". Empty for the class leader.
     /// </summary>
     [JsonPropertyName("cd")]
     [MaxLength(12)]
     [MessagePack.Key(10)]
     public string? InClassDifference { get; set; }
     /// <summary>
-    /// Time to the next car overall formatted as HH:mm:ss.fff.
+    /// Time to the next car overall formatted as s.fff, m:ss.fff or h:mm:ss.fff. When the cars are on
+    /// different laps this is the number of laps instead, e.g. "2 laps". Empty for the overall leader.
     /// </summary>
     [JsonPropertyName("og")]
     [MaxLength(12)]
     [MessagePack.Key(11)]
     public string? OverallGap { get; set; }
     /// <summary>
-    /// Time to the overall leader formatted as HH:mm:ss.fff.
+    /// Time to the overall leader formatted as s.fff, m:ss.fff or h:mm:ss.fff. When the cars are on
+    /// different laps this is the number of laps instead, e.g. "2 laps". Empty for the overall leader.
     /// </summary>
     [JsonPropertyName("od")]
     [MaxLength(12)]
@@ -414,28 +420,34 @@ public class CarPosition
     [MessagePack.Key(61)]
     public bool HasGps { get; set; }
     /// <summary>
-    /// Time to the next car in the same class formatted as HH:mm:ss.fff.
+    /// Time to the next car in the same class when the cars are ordered by their best lap time, such as
+    /// for qualifying. Formatted as s.fff, m:ss.fff or h:mm:ss.fff. Empty for the car with the best lap
+    /// time in the class and for cars that have not set a lap time.
     /// </summary>
     [JsonPropertyName("cgft")]
     [MaxLength(12)]
     [MessagePack.Key(62)]
     public string? InClassGapByFastTime { get; set; }
     /// <summary>
-    /// Time to the in-class leader formatted as HH:mm:ss.fff.
+    /// Time to the car with the best lap time in the class, such as for qualifying. Formatted as s.fff,
+    /// m:ss.fff or h:mm:ss.fff. Empty for that car and for cars that have not set a lap time.
     /// </summary>
     [JsonPropertyName("cdft")]
     [MaxLength(12)]
     [MessagePack.Key(63)]
     public string? InClassDifferenceByFastTime { get; set; }
     /// <summary>
-    /// Time to the next car overall formatted as HH:mm:ss.fff.
+    /// Time to the next car overall when the cars are ordered by their best lap time, such as for
+    /// qualifying. Formatted as s.fff, m:ss.fff or h:mm:ss.fff. Empty for the car with the best lap time
+    /// overall and for cars that have not set a lap time.
     /// </summary>
     [JsonPropertyName("ogft")]
     [MaxLength(12)]
     [MessagePack.Key(64)]
     public string? OverallGapByFastTime { get; set; }
     /// <summary>
-    /// Time to the overall leader formatted as HH:mm:ss.fff.
+    /// Time to the car with the best lap time overall, such as for qualifying. Formatted as s.fff,
+    /// m:ss.fff or h:mm:ss.fff. Empty for that car and for cars that have not set a lap time.
     /// </summary>
     [JsonPropertyName("odft")]
     [MaxLength(12)]
