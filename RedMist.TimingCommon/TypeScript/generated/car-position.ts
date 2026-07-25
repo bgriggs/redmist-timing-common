@@ -15,6 +15,8 @@ export interface CarPosition {
      * Used to indicate position information is not available.
      */
     readonly invalidPosition: number;
+    readonly invalidSpeed: number;
+    readonly invalidTrackPosition: number;
     /**
      * Redmist Event ID.
      */
@@ -52,19 +54,23 @@ export interface CarPosition {
      */
     isBestTimeClass: boolean;
     /**
-     * Time to the next car in the same class formatted as HH:mm:ss.fff.
+     * Time to the next car in the same class formatted as s.fff, m:ss.fff or h:mm:ss.fff. When the cars
+     * are on different laps this is the number of laps instead, e.g. "2 laps". Empty for the class leader.
      */
     inClassGap: string | null;
     /**
-     * Time to the in-class leader formatted as HH:mm:ss.fff.
+     * Time to the in-class leader formatted as s.fff, m:ss.fff or h:mm:ss.fff. When the cars are on
+     * different laps this is the number of laps instead, e.g. "2 laps". Empty for the class leader.
      */
     inClassDifference: string | null;
     /**
-     * Time to the next car overall formatted as HH:mm:ss.fff.
+     * Time to the next car overall formatted as s.fff, m:ss.fff or h:mm:ss.fff. When the cars are on
+     * different laps this is the number of laps instead, e.g. "2 laps". Empty for the overall leader.
      */
     overallGap: string | null;
     /**
-     * Time to the overall leader formatted as HH:mm:ss.fff.
+     * Time to the overall leader formatted as s.fff, m:ss.fff or h:mm:ss.fff. When the cars are on
+     * different laps this is the number of laps instead, e.g. "2 laps". Empty for the overall leader.
      */
     overallDifference: string | null;
     /**
@@ -271,19 +277,25 @@ export interface CarPosition {
      */
     hasGps: boolean;
     /**
-     * Time to the next car in the same class formatted as HH:mm:ss.fff.
+     * Time to the next car in the same class when the cars are ordered by their best lap time, such as
+     * for qualifying. Formatted as s.fff, m:ss.fff or h:mm:ss.fff. Empty for the car with the best lap
+     * time in the class and for cars that have not set a lap time.
      */
     inClassGapByFastTime: string | null;
     /**
-     * Time to the in-class leader formatted as HH:mm:ss.fff.
+     * Time to the car with the best lap time in the class, such as for qualifying. Formatted as s.fff,
+     * m:ss.fff or h:mm:ss.fff. Empty for that car and for cars that have not set a lap time.
      */
     inClassDifferenceByFastTime: string | null;
     /**
-     * Time to the next car overall formatted as HH:mm:ss.fff.
+     * Time to the next car overall when the cars are ordered by their best lap time, such as for
+     * qualifying. Formatted as s.fff, m:ss.fff or h:mm:ss.fff. Empty for the car with the best lap time
+     * overall and for cars that have not set a lap time.
      */
     overallGapByFastTime: string | null;
     /**
-     * Time to the overall leader formatted as HH:mm:ss.fff.
+     * Time to the car with the best lap time overall, such as for qualifying. Formatted as s.fff,
+     * m:ss.fff or h:mm:ss.fff. Empty for that car and for cars that have not set a lap time.
      */
     overallDifferenceByFastTime: string | null;
     /**
