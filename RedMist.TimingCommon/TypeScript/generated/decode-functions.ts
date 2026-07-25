@@ -140,6 +140,11 @@ export function decodeCarPosition(a: unknown[]): CarPosition {
         flaggingZone: a[59] as number | null,
         driverSource: a[60] as string,
         hasGps: a[61] as boolean,
+        inClassGapByFastTime: a[62] as string,
+        inClassDifferenceByFastTime: a[63] as string,
+        overallGapByFastTime: a[64] as string,
+        overallDifferenceByFastTime: a[65] as string,
+        lapPositionPercent: a[66] as number | null,
     };
 }
 
@@ -382,6 +387,11 @@ export function decodeCarPositionPatch(a: unknown[]): CarPositionPatch {
         flaggingZone: a[59] as number | null,
         driverSource: a[60] as string,
         hasGps: a[61] as boolean | null,
+        inClassGapByFastTime: a[62] as string,
+        inClassDifferenceByFastTime: a[63] as string,
+        overallGapByFastTime: a[64] as string,
+        overallDifferenceByFastTime: a[65] as string,
+        lapPositionPercent: a[66] as number | null,
     };
 }
 
