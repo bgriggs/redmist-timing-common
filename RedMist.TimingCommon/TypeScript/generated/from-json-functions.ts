@@ -139,6 +139,7 @@ export function carPositionFromJson(json: Record<string, unknown>): CarPosition 
         pitSpeedEnforced: json['pse'] as boolean,
         flaggingZone: json['fz'] as number | null,
         driverSource: json['ds'] as string,
+        hasGps: json['hg'] as boolean,
     };
 }
 
@@ -380,6 +381,7 @@ export function carPositionPatchFromJson(json: Record<string, unknown>): CarPosi
         pitSpeedEnforced: json['pitSpeedEnforced'] as boolean | null,
         flaggingZone: json['flaggingZone'] as number | null,
         driverSource: json['driverSource'] as string,
+        hasGps: json['hasGps'] as boolean | null,
     };
 }
 

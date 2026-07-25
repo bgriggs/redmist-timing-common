@@ -405,4 +405,12 @@ public class CarPosition
     [MessagePack.Key(60)]
     [MaxLength(16)]
     public string? DriverSource { get; set; }
+    /// <summary>
+    /// Whether the car currently has a usable GPS position/zone fix. False when the in-car
+    /// GPS is uninitialized or has dropped out, in which case position-derived values (zone,
+    /// lat/lon) are not reliable. Requires specific in-car equipment.
+    /// </summary>
+    [JsonPropertyName("hg")]
+    [MessagePack.Key(61)]
+    public bool HasGps { get; set; }
 }

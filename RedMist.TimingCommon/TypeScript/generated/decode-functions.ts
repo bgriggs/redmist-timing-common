@@ -139,6 +139,7 @@ export function decodeCarPosition(a: unknown[]): CarPosition {
         pitSpeedEnforced: a[58] as boolean,
         flaggingZone: a[59] as number | null,
         driverSource: a[60] as string,
+        hasGps: a[61] as boolean,
     };
 }
 
@@ -380,6 +381,7 @@ export function decodeCarPositionPatch(a: unknown[]): CarPositionPatch {
         pitSpeedEnforced: a[58] as boolean | null,
         flaggingZone: a[59] as number | null,
         driverSource: a[60] as string,
+        hasGps: a[61] as boolean | null,
     };
 }
 
