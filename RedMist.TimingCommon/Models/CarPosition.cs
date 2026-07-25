@@ -413,4 +413,38 @@ public class CarPosition
     [JsonPropertyName("hg")]
     [MessagePack.Key(61)]
     public bool HasGps { get; set; }
+    /// <summary>
+    /// Time to the next car in the same class formatted as HH:mm:ss.fff.
+    /// </summary>
+    [JsonPropertyName("cgft")]
+    [MaxLength(12)]
+    [MessagePack.Key(62)]
+    public string? InClassGapByFastTime { get; set; }
+    /// <summary>
+    /// Time to the in-class leader formatted as HH:mm:ss.fff.
+    /// </summary>
+    [JsonPropertyName("cdft")]
+    [MaxLength(12)]
+    [MessagePack.Key(63)]
+    public string? InClassDifferenceByFastTime { get; set; }
+    /// <summary>
+    /// Time to the next car overall formatted as HH:mm:ss.fff.
+    /// </summary>
+    [JsonPropertyName("ogft")]
+    [MaxLength(12)]
+    [MessagePack.Key(64)]
+    public string? OverallGapByFastTime { get; set; }
+    /// <summary>
+    /// Time to the overall leader formatted as HH:mm:ss.fff.
+    /// </summary>
+    [JsonPropertyName("odft")]
+    [MaxLength(12)]
+    [MessagePack.Key(65)]
+    public string? OverallDifferenceByFastTime { get; set; }
+    /// <summary>
+    /// Position of the car in the current lap as a percentage of the lap completed. Null if not supported by the timing system.
+    /// </summary>
+    [JsonPropertyName("lapposp")]
+    [MessagePack.Key(66)]
+    public int? LapPositionPercent { get; set; }
 }

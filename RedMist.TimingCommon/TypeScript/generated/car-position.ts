@@ -270,4 +270,24 @@ export interface CarPosition {
      * lat/lon) are not reliable. Requires specific in-car equipment.
      */
     hasGps: boolean;
+    /**
+     * Time to the next car in the same class formatted as HH:mm:ss.fff.
+     */
+    inClassGapByFastTime: string | null;
+    /**
+     * Time to the in-class leader formatted as HH:mm:ss.fff.
+     */
+    inClassDifferenceByFastTime: string | null;
+    /**
+     * Time to the next car overall formatted as HH:mm:ss.fff.
+     */
+    overallGapByFastTime: string | null;
+    /**
+     * Time to the overall leader formatted as HH:mm:ss.fff.
+     */
+    overallDifferenceByFastTime: string | null;
+    /**
+     * Position of the car in the current lap as a percentage of the lap completed. Null if not supported by the timing system.
+     */
+    lapPositionPercent: number | null;
 }

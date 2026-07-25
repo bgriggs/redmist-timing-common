@@ -140,6 +140,11 @@ export function carPositionFromJson(json: Record<string, unknown>): CarPosition 
         flaggingZone: json['fz'] as number | null,
         driverSource: json['ds'] as string,
         hasGps: json['hg'] as boolean,
+        inClassGapByFastTime: json['cgft'] as string,
+        inClassDifferenceByFastTime: json['cdft'] as string,
+        overallGapByFastTime: json['ogft'] as string,
+        overallDifferenceByFastTime: json['odft'] as string,
+        lapPositionPercent: json['lapposp'] as number | null,
     };
 }
 
@@ -382,6 +387,11 @@ export function carPositionPatchFromJson(json: Record<string, unknown>): CarPosi
         flaggingZone: json['flaggingZone'] as number | null,
         driverSource: json['driverSource'] as string,
         hasGps: json['hasGps'] as boolean | null,
+        inClassGapByFastTime: json['inClassGapByFastTime'] as string,
+        inClassDifferenceByFastTime: json['inClassDifferenceByFastTime'] as string,
+        overallGapByFastTime: json['overallGapByFastTime'] as string,
+        overallDifferenceByFastTime: json['overallDifferenceByFastTime'] as string,
+        lapPositionPercent: json['lapPositionPercent'] as number | null,
     };
 }
 

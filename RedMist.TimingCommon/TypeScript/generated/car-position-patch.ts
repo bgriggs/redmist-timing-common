@@ -260,4 +260,24 @@ export interface CarPositionPatch {
      * Patch field for HasGps. Null indicates no change.
      */
     hasGps: boolean | null;
+    /**
+     * Patch field for InClassGapByFastTime. Null indicates no change.
+     */
+    inClassGapByFastTime: string | null;
+    /**
+     * Patch field for InClassDifferenceByFastTime. Null indicates no change.
+     */
+    inClassDifferenceByFastTime: string | null;
+    /**
+     * Patch field for OverallGapByFastTime. Null indicates no change.
+     */
+    overallGapByFastTime: string | null;
+    /**
+     * Patch field for OverallDifferenceByFastTime. Null indicates no change.
+     */
+    overallDifferenceByFastTime: string | null;
+    /**
+     * Patch field for LapPositionPercent. Null indicates no change.
+     */
+    lapPositionPercent: number | null;
 }
