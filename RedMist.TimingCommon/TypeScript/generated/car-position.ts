@@ -264,4 +264,10 @@ export interface CarPosition {
      * Null if not supported by the timing system.
      */
     driverSource: string | null;
+    /**
+     * Whether the car currently has a usable GPS position/zone fix. False when the in-car
+     * GPS is uninitialized or has dropped out, in which case position-derived values (zone,
+     * lat/lon) are not reliable. Requires specific in-car equipment.
+     */
+    hasGps: boolean;
 }

@@ -256,4 +256,8 @@ export interface CarPositionPatch {
      * Patch field for DriverSource. Null indicates no change.
      */
     driverSource: string | null;
+    /**
+     * Patch field for HasGps. Null indicates no change.
+     */
+    hasGps: boolean | null;
 }
