@@ -279,6 +279,15 @@ export interface CarPosition {
      */
     driverSource: string | null;
     /**
+     * Retired - always false, never set. Held HasGps, a write-only flag with no consumers
+     * that duplicated what @see {@link RedMist.TimingCommon.Models.CarPosition.SignalBars} now says - zero bars already means no
+     * usable fix. The property is kept only so key 61 stays a bool on the wire: clients
+     * decode positionally, and removing a keyed member serializes nil at its index, which
+     * crashes readers built against 1.8.0-1.12.0 where this key was a non-nullable bool.
+     * Do not set, read, or repurpose this member.
+     */
+    hasGps: boolean;
+    /**
      * Time to the next car in the same class when the cars are ordered by their best lap time, such as
      * for qualifying. Formatted as s.fff, m:ss.fff or h:mm:ss.fff. Empty for the car with the best lap
      * time in the class and for cars that have not set a lap time.
