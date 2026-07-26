@@ -63,6 +63,7 @@ export function decodeSessionState(a: unknown[]): SessionState {
         isArchived: a[31] as boolean,
         trackTempDegF: a[32] as number | null,
         trackPrecipitationPerc: a[33] as number | null,
+        hasTelemetrySource: a[34] as boolean,
     };
 }
 
@@ -80,6 +81,8 @@ export function decodeCarPosition(a: unknown[]): CarPosition {
         invalidPosition: -999,
         invalidSpeed: -999,
         invalidTrackPosition: -999,
+        minSignalBars: 0,
+        maxSignalBars: 5,
         eventId: a[0] as string,
         sessionId: a[1] as string,
         number: a[2] as string,
@@ -147,6 +150,7 @@ export function decodeCarPosition(a: unknown[]): CarPosition {
         overallGapByFastTime: a[64] as string,
         overallDifferenceByFastTime: a[65] as string,
         lapPositionPercent: a[66] as number | null,
+        signalBars: a[67] as number | null,
     };
 }
 
@@ -322,6 +326,7 @@ export function decodeSessionStatePatch(a: unknown[]): SessionStatePatch {
         isArchived: a[31] as boolean | null,
         trackTempDegF: a[32] as number | null,
         trackPrecipitationPerc: a[33] as number | null,
+        hasTelemetrySource: a[34] as boolean | null,
     };
 }
 
@@ -394,6 +399,7 @@ export function decodeCarPositionPatch(a: unknown[]): CarPositionPatch {
         overallGapByFastTime: a[64] as string,
         overallDifferenceByFastTime: a[65] as string,
         lapPositionPercent: a[66] as number | null,
+        signalBars: a[67] as number | null,
     };
 }
 

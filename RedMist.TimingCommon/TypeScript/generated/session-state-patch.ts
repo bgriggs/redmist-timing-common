@@ -151,4 +151,8 @@ export interface SessionStatePatch {
      * Patch field for TrackPrecipitationPerc. Null indicates no change.
      */
     trackPrecipitationPerc: number | null;
+    /**
+     * Patch field for HasTelemetrySource. Null indicates no change.
+     */
+    hasTelemetrySource: boolean | null;
 }

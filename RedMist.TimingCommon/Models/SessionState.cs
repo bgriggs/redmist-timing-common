@@ -203,4 +203,15 @@ public class SessionState
     /// </summary>
     [MessagePack.Key(33)]
     public int? TrackPrecipitationPerc { get; set; }
+    /// <summary>
+    /// Whether an in-car telemetry source is currently feeding this session. False for events
+    /// with no such equipment, and false again once the feed stops, so it reflects the live
+    /// state rather than latching on the first record received.
+    ///
+    /// Clients use this to decide whether the per-car signal indicator is meaningful at all:
+    /// when false, omit <see cref="CarPosition.SignalBars"/> from the display for every car
+    /// rather than showing a field of empty bars.
+    /// </summary>
+    [MessagePack.Key(34)]
+    public bool HasTelemetrySource { get; set; }
 }

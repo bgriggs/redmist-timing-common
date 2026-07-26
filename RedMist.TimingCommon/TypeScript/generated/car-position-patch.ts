@@ -280,4 +280,8 @@ export interface CarPositionPatch {
      * Patch field for LapPositionPercent. Null indicates no change.
      */
     lapPositionPercent: number | null;
+    /**
+     * Patch field for SignalBars. Null indicates no change.
+     */
+    signalBars: number | null;
 }

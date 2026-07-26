@@ -63,6 +63,7 @@ export function sessionStateFromJson(json: Record<string, unknown>): SessionStat
         isArchived: json['isArchived'] as boolean,
         trackTempDegF: json['trackTempDegF'] as number | null,
         trackPrecipitationPerc: json['trackPrecipitationPerc'] as number | null,
+        hasTelemetrySource: json['hasTelemetrySource'] as boolean,
     };
 }
 
@@ -80,6 +81,8 @@ export function carPositionFromJson(json: Record<string, unknown>): CarPosition 
         invalidPosition: -999,
         invalidSpeed: -999,
         invalidTrackPosition: -999,
+        minSignalBars: 0,
+        maxSignalBars: 5,
         eventId: json['eid'] as string,
         sessionId: json['sid'] as string,
         number: json['n'] as string,
@@ -147,6 +150,7 @@ export function carPositionFromJson(json: Record<string, unknown>): CarPosition 
         overallGapByFastTime: json['ogft'] as string,
         overallDifferenceByFastTime: json['odft'] as string,
         lapPositionPercent: json['lapposp'] as number | null,
+        signalBars: json['sb'] as number | null,
     };
 }
 
@@ -322,6 +326,7 @@ export function sessionStatePatchFromJson(json: Record<string, unknown>): Sessio
         isArchived: json['isArchived'] as boolean | null,
         trackTempDegF: json['trackTempDegF'] as number | null,
         trackPrecipitationPerc: json['trackPrecipitationPerc'] as number | null,
+        hasTelemetrySource: json['hasTelemetrySource'] as boolean | null,
     };
 }
 
@@ -394,6 +399,7 @@ export function carPositionPatchFromJson(json: Record<string, unknown>): CarPosi
         overallGapByFastTime: json['overallGapByFastTime'] as string,
         overallDifferenceByFastTime: json['overallDifferenceByFastTime'] as string,
         lapPositionPercent: json['lapPositionPercent'] as number | null,
+        signalBars: json['signalBars'] as number | null,
     };
 }
 

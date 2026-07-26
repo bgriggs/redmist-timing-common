@@ -21,6 +21,15 @@ public class CarPosition
     public const int InvalidTrackPosition = -999;
 
     /// <summary>
+    /// Connected but no usable signal - the bottom of the <see cref="SignalBars"/> scale.
+    /// </summary>
+    public const int MinSignalBars = 0;
+    /// <summary>
+    /// Full signal - the top of the <see cref="SignalBars"/> scale.
+    /// </summary>
+    public const int MaxSignalBars = 5;
+
+    /// <summary>
     /// Redmist Event ID.
     /// </summary>
     [JsonPropertyName("eid")]
@@ -459,4 +468,26 @@ public class CarPosition
     [JsonPropertyName("lapposp")]
     [MessagePack.Key(66)]
     public int? LapPositionPercent { get; set; }
+    /// <summary>
+    /// Health of the car's in-car telemetry link, as a phone-style signal strength from
+    /// <see cref="MinSignalBars"/> to <see cref="MaxSignalBars"/>. Reflects how much the
+    /// position data shown for this car can be trusted: it combines the rate of implausible
+    /// readings (pit zones reported at racing speed, bad-GPS sentinels, position jumps) with
+    /// how recently the car reported. <see cref="MinSignalBars"/> means the car is connected
+    /// but currently has no usable fix, or has not reported recently enough to be considered
+    /// live - treat its position, speed and zone as stale.
+    ///
+    /// Null means the car has no in-car device at all, which is not the same as zero bars:
+    /// zero is a device with no signal, null is no device to have signal. Clients should omit
+    /// the indicator entirely for null, and for whole events where
+    /// <see cref="SessionState.HasTelemetrySource"/> is false.
+    ///
+    /// This describes displayed position data only. Pit state is not folded in: when a car's
+    /// pit data is untrustworthy the server falls back to another timing source, so what the
+    /// client shows is already corrected and there is nothing for the indicator to warn about.
+    /// </summary>
+    [JsonPropertyName("sb")]
+    [Range(MinSignalBars, MaxSignalBars)]
+    [MessagePack.Key(67)]
+    public int? SignalBars { get; set; }
 }
