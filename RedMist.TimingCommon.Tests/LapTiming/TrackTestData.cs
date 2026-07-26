@@ -36,6 +36,42 @@ internal static class TrackTestData
         return pts;
     }
 
+    /// <summary>
+    /// A point at a local east/north offset in meters from the test origin, for laying out shapes
+    /// (parallel straights, crossovers) that a circle cannot express.
+    /// </summary>
+    public static (double lat, double lon) PointAt(double eastMeters, double northMeters)
+    {
+        var r = TrackGeometry.EarthRadiusMeters;
+        var cos0 = Math.Cos(Lat0 * DegToRad);
+        return (Lat0 + (northMeters / r) * RadToDeg, Lon0 + (eastMeters / (r * cos0)) * RadToDeg);
+    }
+
+    /// <summary>
+    /// A closed path through the given local east/north offsets, with cumulative distances measured
+    /// along it. Returns the points and the total length including the closing segment.
+    /// </summary>
+    public static (List<TrackMapPoint> points, double totalLengthMeters) ClosedPath(
+        IReadOnlyList<(double east, double north)> localPoints)
+    {
+        var coords = localPoints.Select(p => PointAt(p.east, p.north)).ToList();
+        var points = new List<TrackMapPoint>(coords.Count);
+        double cumulative = 0;
+        for (int i = 0; i < coords.Count; i++)
+        {
+            if (i > 0)
+                cumulative += TrackGeometry.DistanceMeters(coords[i - 1].lat, coords[i - 1].lon, coords[i].lat, coords[i].lon);
+            points.Add(new TrackMapPoint
+            {
+                Latitude = coords[i].lat,
+                Longitude = coords[i].lon,
+                CumulativeDistanceMeters = cumulative,
+            });
+        }
+        var closing = TrackGeometry.DistanceMeters(coords[^1].lat, coords[^1].lon, coords[0].lat, coords[0].lon);
+        return (points, cumulative + closing);
+    }
+
     /// <summary>A <see cref="TrackMap"/> for a circle, with cumulative distances filled in.</summary>
     public static TrackMap CircleMap(double radiusMeters, int count)
     {
