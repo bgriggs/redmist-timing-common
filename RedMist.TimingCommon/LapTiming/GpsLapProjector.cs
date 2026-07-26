@@ -6,8 +6,12 @@ namespace RedMist.TimingCommon.LapTiming;
 /// The result of projecting a car's lap time from its position on a <see cref="TrackMap"/>.
 /// </summary>
 /// <param name="ProjectedLapTimeMs">Estimated total lap time in milliseconds.</param>
-/// <param name="Fraction">Fraction of the lap completed at the sampled position, in (0, 1).</param>
-/// <param name="DistanceAlongMeters">Distance from start/finish to the sampled position.</param>
+/// <param name="Fraction">Fraction of the lap completed at the sampled position, in [0, 1).</param>
+/// <param name="DistanceAlongMeters">
+/// Distance travelled from the start/finish line to the sampled position, along the path. Measured
+/// from the line rather than from the map's path origin, so it stays consistent with
+/// <paramref name="Fraction"/>.
+/// </param>
 public readonly record struct LapProjection(
     int ProjectedLapTimeMs,
     double Fraction,
@@ -38,13 +42,19 @@ public static class GpsLapProjector
             return null;
 
         var snap = TrackGeometry.Snap(map.Points, map.TotalLengthMeters, latitude, longitude);
-        if (snap == null || snap.Value.Fraction < minFraction)
+        if (snap == null)
             return null;
 
-        var ms = elapsedSinceLapStart.TotalMilliseconds / snap.Value.Fraction;
-        if (ms <= 0 || ms > int.MaxValue)
+        // Elapsed time is measured from the start/finish crossing, so the fraction it is divided by
+        // has to be measured from the same place rather than from the map's arbitrary path origin.
+        var fraction = TrackGeometry.FractionFromStartFinish(map, snap.Value.DistanceAlongMeters);
+        if (!double.IsFinite(fraction) || fraction < minFraction)
             return null;
 
-        return new LapProjection((int)ms, snap.Value.Fraction, snap.Value.DistanceAlongMeters);
+        var ms = elapsedSinceLapStart.TotalMilliseconds / fraction;
+        if (!double.IsFinite(ms) || ms <= 0 || ms > int.MaxValue)
+            return null;
+
+        return new LapProjection((int)ms, fraction, fraction * map.TotalLengthMeters);
     }
 }
