@@ -159,4 +159,14 @@ export interface SessionState {
      * Estimated precipitation on the track as a percentage. Value of 0 means no chance of precipitation, 100 means certain precipitation.
      */
     trackPrecipitationPerc: number | null;
+    /**
+     * Whether an in-car telemetry source is currently feeding this session. False for events
+     * with no such equipment, and false again once the feed stops, so it reflects the live
+     * state rather than latching on the first record received.
+     * 
+     * Clients use this to decide whether the per-car signal indicator is meaningful at all:
+     * when false, omit @see {@link RedMist.TimingCommon.Models.CarPosition.SignalBars} from the display for every car
+     * rather than showing a field of empty bars.
+     */
+    hasTelemetrySource: boolean;
 }

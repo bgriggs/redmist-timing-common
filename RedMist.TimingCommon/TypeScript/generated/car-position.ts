@@ -18,6 +18,14 @@ export interface CarPosition {
     readonly invalidSpeed: number;
     readonly invalidTrackPosition: number;
     /**
+     * Connected but no usable signal - the bottom of the @see {@link RedMist.TimingCommon.Models.CarPosition.SignalBars} scale.
+     */
+    readonly minSignalBars: number;
+    /**
+     * Full signal - the top of the @see {@link RedMist.TimingCommon.Models.CarPosition.SignalBars} scale.
+     */
+    readonly maxSignalBars: number;
+    /**
      * Redmist Event ID.
      */
     eventId: string | null;
@@ -302,4 +310,23 @@ export interface CarPosition {
      * Position of the car in the current lap as a percentage of the lap completed. Null if not supported by the timing system.
      */
     lapPositionPercent: number | null;
+    /**
+     * Health of the car's in-car telemetry link, as a phone-style signal strength from
+     * @see {@link RedMist.TimingCommon.Models.CarPosition.MinSignalBars} to @see {@link RedMist.TimingCommon.Models.CarPosition.MaxSignalBars}. Reflects how much the
+     * position data shown for this car can be trusted: it combines the rate of implausible
+     * readings (pit zones reported at racing speed, bad-GPS sentinels, position jumps) with
+     * how recently the car reported. @see {@link RedMist.TimingCommon.Models.CarPosition.MinSignalBars} means the car is connected
+     * but currently has no usable fix, or has not reported recently enough to be considered
+     * live - treat its position, speed and zone as stale.
+     * 
+     * Null means the car has no in-car device at all, which is not the same as zero bars:
+     * zero is a device with no signal, null is no device to have signal. Clients should omit
+     * the indicator entirely for null, and for whole events where
+     * @see {@link RedMist.TimingCommon.Models.SessionState.HasTelemetrySource} is false.
+     * 
+     * This describes displayed position data only. Pit state is not folded in: when a car's
+     * pit data is untrustworthy the server falls back to another timing source, so what the
+     * client shows is already corrected and there is nothing for the indicator to warn about.
+     */
+    signalBars: number | null;
 }
