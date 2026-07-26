@@ -308,10 +308,18 @@ export interface CarPosition {
      * Health of the car's in-car telemetry link, as a phone-style signal strength from
      * @see {@link RedMist.TimingCommon.Models.CarPosition.MinSignalBars} to @see {@link RedMist.TimingCommon.Models.CarPosition.MaxSignalBars}. Reflects how much the
      * position data shown for this car can be trusted: it combines the rate of implausible
-     * readings (pit zones reported at racing speed, bad-GPS sentinels, position jumps) with
-     * how recently the car reported. @see {@link RedMist.TimingCommon.Models.CarPosition.MinSignalBars} means the car is connected
-     * but currently has no usable fix, or has not reported recently enough to be considered
-     * live - treat its position, speed and zone as stale.
+     * readings with how recently the car reported. A reading is implausible when it carries
+     * no usable position at all (no flagging zone and no coordinates), when the device
+     * reports its own bad-GPS sentinel speed, or when it claims a pit or paddock zone at
+     * racing speed. @see {@link RedMist.TimingCommon.Models.CarPosition.MinSignalBars} means the car is connected but currently has
+     * no usable fix, or has not reported recently enough to be considered live - treat its
+     * position, speed and zone as stale.
+     * 
+     * Deliberately smoothed and lagging: the rate is measured over a rolling window, a car
+     * reports full bars briefly after first appearing, and a change has to hold before it is
+     * published. So this answers "can this car's positioning be trusted at all", not "is this
+     * particular reading good" - a car that goes bad right now still reads well for a few
+     * seconds. Callers needing to reject an individual reading must validate it themselves.
      * 
      * Null means the car has no in-car device at all, which is not the same as zero bars:
      * zero is a device with no signal, null is no device to have signal. Clients should omit
