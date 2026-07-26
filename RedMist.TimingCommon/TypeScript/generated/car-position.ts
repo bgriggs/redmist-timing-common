@@ -279,12 +279,6 @@ export interface CarPosition {
      */
     driverSource: string | null;
     /**
-     * Whether the car currently has a usable GPS position/zone fix. False when the in-car
-     * GPS is uninitialized or has dropped out, in which case position-derived values (zone,
-     * lat/lon) are not reliable. Requires specific in-car equipment.
-     */
-    hasGps: boolean;
-    /**
      * Time to the next car in the same class when the cars are ordered by their best lap time, such as
      * for qualifying. Formatted as s.fff, m:ss.fff or h:mm:ss.fff. Empty for the car with the best lap
      * time in the class and for cars that have not set a lap time.
