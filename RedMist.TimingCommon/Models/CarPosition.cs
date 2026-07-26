@@ -420,9 +420,12 @@ public class CarPosition
     [MessagePack.Key(60)]
     [MaxLength(16)]
     public string? DriverSource { get; set; }
-    // Key 61 ("hg") is retired. It held HasGps, a write-only flag with no consumers that
-    // duplicated what SignalBars now says - zero bars already means no usable fix. Do not
-    // reuse this key: older clients decode by index and would read the new value as a bool.
+    /// <summary>
+    /// Retired - always false, never set.
+    /// </summary>
+    [JsonPropertyName("hg")]
+    [MessagePack.Key(61)]
+    public bool HasGps { get; set; }
     /// <summary>
     /// Time to the next car in the same class when the cars are ordered by their best lap time, such as
     /// for qualifying. Formatted as s.fff, m:ss.fff or h:mm:ss.fff. Empty for the car with the best lap
