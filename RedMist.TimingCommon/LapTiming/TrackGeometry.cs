@@ -43,6 +43,13 @@ public static class TrackGeometry
     }
 
     /// <summary>
+    /// Whether a lap length can be measured against at all. A stored map can carry NaN or an
+    /// infinity - nothing upstream of it rejects one - and both slip past a bare sign test.
+    /// </summary>
+    public static bool IsUsableLength(double totalLengthMeters) =>
+        double.IsFinite(totalLengthMeters) && totalLengthMeters > 0;
+
+    /// <summary>
     /// Shortest distance between two points measured around a closed path of
     /// <paramref name="totalLengthMeters"/>, i.e. taking the wrap at the origin into account.
     /// </summary>
@@ -81,6 +88,100 @@ public static class TrackGeometry
     /// </summary>
     public static double FractionFromStartFinish(TrackMap map, double distanceAlongMeters) =>
         FractionFromStartFinish(distanceAlongMeters, map.TotalLengthMeters, map.StartFinishOffsetMeters ?? 0);
+
+    /// <summary>
+    /// The position a given distance along the closed path from its origin, interpolated within the
+    /// segment the distance falls in, together with the direction of travel there as a compass
+    /// bearing in degrees (0 north, 90 east, clockwise).
+    ///
+    /// The inverse of <see cref="Snap"/>: that turns a position into a distance, this turns a
+    /// distance back into a position. Distances outside the lap wrap around it, so a caller need not
+    /// normalize first. Returns null when the path is missing or has fewer than two points, has no
+    /// usable length, or when the distance is not finite.
+    /// </summary>
+    public static (double Latitude, double Longitude, double HeadingDegrees)? PointAtDistance(
+        IReadOnlyList<TrackMapPoint> points, double totalLengthMeters, double distanceMeters)
+    {
+        // The length is checked for finiteness, not just sign: a persisted map can carry NaN or an
+        // infinity, because the builder's plausibility check is a pair of comparisons that a NaN
+        // fails silently, and either one would otherwise yield NaN coordinates.
+        if (points is not { Count: >= 2 } || !IsUsableLength(totalLengthMeters) || !double.IsFinite(distanceMeters))
+            return null;
+
+        var d = NormalizeDistance(distanceMeters, totalLengthMeters);
+
+        // Find the segment containing d. Cumulative distances ascend, so a linear walk over a
+        // decimated polyline is cheap and avoids assuming they are exactly sorted.
+        var n = points.Count;
+        for (int i = 0; i < n; i++)
+        {
+            var a = points[i];
+            var b = points[(i + 1) % n];
+            var segStart = a.CumulativeDistanceMeters;
+
+            // The final segment closes the loop, so it ends at the lap length rather than at the
+            // first point's cumulative distance of zero.
+            var segEnd = i + 1 < n ? points[i + 1].CumulativeDistanceMeters : totalLengthMeters;
+            if (d > segEnd && i + 1 < n)
+                continue;
+
+            var segLength = segEnd - segStart;
+            var t = segLength > 0 ? Math.Clamp((d - segStart) / segLength, 0.0, 1.0) : 0.0;
+
+            var lat = a.Latitude + t * (b.Latitude - a.Latitude);
+            var lon = a.Longitude + t * (b.Longitude - a.Longitude);
+            return (lat, lon, BearingDegrees(a.Latitude, a.Longitude, b.Latitude, b.Longitude));
+        }
+
+        // Unreachable: the last iteration cannot continue, because its guard requires i + 1 < n.
+        // The compiler cannot see that, so the loop needs an exit.
+        return null;
+    }
+
+    /// <summary>
+    /// A distance along a closed path, brought into [0, totalLengthMeters) by wrapping at the
+    /// origin. Distances beyond a lap and negative distances both land where they would if the path
+    /// were walked round; a caller therefore never has to normalize before measuring or comparing.
+    /// </summary>
+    public static double NormalizeDistance(double distanceMeters, double totalLengthMeters)
+    {
+        if (!IsUsableLength(totalLengthMeters) || !double.IsFinite(distanceMeters))
+            return 0;
+
+        var d = distanceMeters % totalLengthMeters;
+        if (d < 0)
+        {
+            d += totalLengthMeters;
+            // A distance a hair behind the origin leaves a tiny negative that rounds back up to the
+            // full length, which is the one value the range excludes.
+            if (d >= totalLengthMeters)
+                d = 0;
+        }
+        return d;
+    }
+
+    /// <summary>
+    /// Compass bearing in degrees from one point to another: 0 is north, 90 east, measured
+    /// clockwise and normalized to [0, 360). Uses the same flat-earth approximation as the rest of
+    /// this class, which is exact enough over a segment of a track. Two coincident points have no
+    /// direction, and report 0.
+    /// </summary>
+    public static double BearingDegrees(double lat1, double lon1, double lat2, double lon2)
+    {
+        var meanLatRad = (lat1 + lat2) * 0.5 * DegToRad;
+        var east = (lon2 - lon1) * DegToRad * Math.Cos(meanLatRad);
+        var north = (lat2 - lat1) * DegToRad;
+        if (east == 0 && north == 0)
+            return 0;
+
+        var degrees = Math.Atan2(east, north) / DegToRad;
+        if (degrees < 0)
+            degrees += 360.0;
+
+        // A bearing a hair west of north leaves a tiny negative that rounds up to exactly 360 when
+        // wrapped, which is the one value the documented range excludes.
+        return degrees >= 360.0 ? 0.0 : degrees;
+    }
 
     /// <summary>
     /// Snaps a geographic point onto the closed centerline path, returning the distance along the
