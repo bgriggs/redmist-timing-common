@@ -33,6 +33,10 @@ public class SessionStateGenerationSpec : GenerationSpec
         typeof(BroadcasterConfig),
         typeof(EventSchedule),
         typeof(EventScheduleEntry),
+        typeof(TrackMapRender),
+        typeof(TrackMapRenderPoint),
+        typeof(TrackMapBounds),
+        typeof(TrackMapStartFinish),
     ];
 
     public override void OnBeforeGeneration(OnBeforeGenerationArgs args)

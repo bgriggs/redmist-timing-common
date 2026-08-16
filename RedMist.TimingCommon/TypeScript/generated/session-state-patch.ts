@@ -155,4 +155,8 @@ export interface SessionStatePatch {
      * Patch field for HasTelemetrySource. Null indicates no change.
      */
     hasTelemetrySource: boolean | null;
+    /**
+     * Patch field for GpsSourceHealth. Null indicates no change.
+     */
+    gpsSourceHealth: number | null;
 }

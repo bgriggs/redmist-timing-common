@@ -26,6 +26,14 @@ export interface CarPosition {
      */
     readonly maxSignalBars: number;
     /**
+     * Nothing usable arriving from this car - the bottom of the @see {@link RedMist.TimingCommon.Models.CarPosition.GpsHealth} scale.
+     */
+    readonly minGpsHealth: number;
+    /**
+     * Keeping up with the rest of the field - the top of the @see {@link RedMist.TimingCommon.Models.CarPosition.GpsHealth} scale.
+     */
+    readonly maxGpsHealth: number;
+    /**
      * Redmist Event ID.
      */
     eventId: string | null;
@@ -279,12 +287,7 @@ export interface CarPosition {
      */
     driverSource: string | null;
     /**
-     * Retired - always false, never set. Held HasGps, a write-only flag with no consumers
-     * that duplicated what @see {@link RedMist.TimingCommon.Models.CarPosition.SignalBars} now says - zero bars already means no
-     * usable fix. The property is kept only so key 61 stays a bool on the wire: clients
-     * decode positionally, and removing a keyed member serializes nil at its index, which
-     * crashes readers built against 1.8.0-1.12.0 where this key was a non-nullable bool.
-     * Do not set, read, or repurpose this member.
+     * Retired - always false, never set.
      */
     hasGps: boolean;
     /**
@@ -340,4 +343,29 @@ export interface CarPosition {
      * client shows is already corrected and there is nothing for the indicator to warn about.
      */
     signalBars: number | null;
+    /**
+     * How well this car's GPS is keeping up, from @see {@link RedMist.TimingCommon.Models.CarPosition.MinGpsHealth} to
+     * @see {@link RedMist.TimingCommon.Models.CarPosition.MaxGpsHealth}, for showing the viewer that a particular car has a connection
+     * problem. It combines two things @see {@link RedMist.TimingCommon.Models.CarPosition.SignalBars} cannot express on its own: how
+     * often the car is reporting, and how much of what it reports is usable. The lower of the two
+     * wins, so a car sending flawless data twice a minute rates as poorly as one sending
+     * unusable data constantly.
+     * 
+     * Graded against the rest of the field rather than an absolute rate. Measured update rates
+     * differ by half again between events - a healthy car at one circuit reports at two thirds
+     * the rate of a healthy car at another - so an absolute scale reads as a fleet-wide failure
+     * at one event and full marks at the next. Against the field, a low value means the same
+     * thing everywhere: this car is doing worse than the cars around it, right now. What that
+     * cannot say is whether the field as a whole is struggling; that is
+     * @see {@link RedMist.TimingCommon.Models.SessionState.GpsSourceHealth}, which is deliberately absolute.
+     * 
+     * Nothing on the server is gated on this - it exists to be displayed. Trust decisions belong
+     * to @see {@link RedMist.TimingCommon.Models.CarPosition.SignalBars}, which is why the two are kept apart: folding update rate into
+     * the value that governs whether a position may be published would withhold positions for
+     * most of the field at an event whose devices are merely slow.
+     * 
+     * Null means the car has no in-car device at all, as with @see {@link RedMist.TimingCommon.Models.CarPosition.SignalBars}, and is
+     * not the same as @see {@link RedMist.TimingCommon.Models.CarPosition.MinGpsHealth} - zero is a device that has gone quiet.
+     */
+    gpsHealth: number | null;
 }

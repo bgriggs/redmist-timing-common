@@ -23,6 +23,10 @@ import { VideoDestination } from "./video-destination"
 import { BroadcasterConfig } from "./broadcaster-config"
 import { EventSchedule } from "./event-schedule"
 import { EventScheduleEntry } from "./event-schedule-entry"
+import { TrackMapRender } from "./track-map-render"
+import { TrackMapRenderPoint } from "./track-map-render-point"
+import { TrackMapBounds } from "./track-map-bounds"
+import { TrackMapStartFinish } from "./track-map-start-finish"
 import { Flags } from "./flags"
 import { VideoDestinationType } from "./video-destination-type"
 import { VideoSystemType } from "./video-system-type"
@@ -64,6 +68,7 @@ export function sessionStateFromJson(json: Record<string, unknown>): SessionStat
         trackTempDegF: json['trackTempDegF'] as number | null,
         trackPrecipitationPerc: json['trackPrecipitationPerc'] as number | null,
         hasTelemetrySource: json['hasTelemetrySource'] as boolean,
+        gpsSourceHealth: json['gpsSourceHealth'] as number | null,
     };
 }
 
@@ -83,6 +88,8 @@ export function carPositionFromJson(json: Record<string, unknown>): CarPosition 
         invalidTrackPosition: -999,
         minSignalBars: 0,
         maxSignalBars: 5,
+        minGpsHealth: 0,
+        maxGpsHealth: 5,
         eventId: json['eid'] as string,
         sessionId: json['sid'] as string,
         number: json['n'] as string,
@@ -151,6 +158,7 @@ export function carPositionFromJson(json: Record<string, unknown>): CarPosition 
         overallDifferenceByFastTime: json['odft'] as string,
         lapPositionPercent: json['lapposp'] as number | null,
         signalBars: json['sb'] as number | null,
+        gpsHealth: json['gh'] as number | null,
     };
 }
 
@@ -327,6 +335,7 @@ export function sessionStatePatchFromJson(json: Record<string, unknown>): Sessio
         trackTempDegF: json['trackTempDegF'] as number | null,
         trackPrecipitationPerc: json['trackPrecipitationPerc'] as number | null,
         hasTelemetrySource: json['hasTelemetrySource'] as boolean | null,
+        gpsSourceHealth: json['gpsSourceHealth'] as number | null,
     };
 }
 
@@ -400,6 +409,7 @@ export function carPositionPatchFromJson(json: Record<string, unknown>): CarPosi
         overallDifferenceByFastTime: json['overallDifferenceByFastTime'] as string,
         lapPositionPercent: json['lapPositionPercent'] as number | null,
         signalBars: json['signalBars'] as number | null,
+        gpsHealth: json['gpsHealth'] as number | null,
     };
 }
 
@@ -440,6 +450,54 @@ export function eventScheduleEntryFromJson(json: Record<string, unknown>): Event
         startTime: json['s'] as Date,
         endTime: json['e'] as Date,
         name: json['n'] as string,
+    };
+}
+
+export function trackMapRenderFromJson(json: Record<string, unknown>): TrackMapRender {
+    return {
+        eventId: json['eid'] as number,
+        sessionId: json['sid'] as number,
+        trackName: json['track'] as string,
+        points: (json['pts'] as Record<string, unknown>[]).map(trackMapRenderPointFromJson),
+        bounds: trackMapBoundsFromJson(json['bounds'] as Record<string, unknown>),
+        lengthMeters: json['len'] as number,
+        startFinish: json['sf'] != null ? trackMapStartFinishFromJson(json['sf'] as Record<string, unknown>) : null,
+        builtUtc: json['built'] as Date,
+        version: json['ver'] as number,
+    };
+}
+
+export function trackMapRenderPointFromJson(json: Record<string, unknown>): TrackMapRenderPoint {
+    return {
+        latitude: json['lat'] as number,
+        longitude: json['lon'] as number,
+        x: json['x'] as number,
+        y: json['y'] as number,
+        cumulativeDistanceMeters: json['d'] as number,
+    };
+}
+
+export function trackMapBoundsFromJson(json: Record<string, unknown>): TrackMapBounds {
+    return {
+        minLatitude: json['minLat'] as number,
+        maxLatitude: json['maxLat'] as number,
+        minLongitude: json['minLon'] as number,
+        maxLongitude: json['maxLon'] as number,
+        widthMeters: json['w'] as number,
+        heightMeters: json['h'] as number,
+        centerLatitude: json['cLat'] as number,
+        centerLongitude: json['cLon'] as number,
+    };
+}
+
+export function trackMapStartFinishFromJson(json: Record<string, unknown>): TrackMapStartFinish {
+    return {
+        latitude: json['lat'] as number,
+        longitude: json['lon'] as number,
+        x: json['x'] as number,
+        y: json['y'] as number,
+        distanceAlongMeters: json['d'] as number,
+        headingDegrees: json['hdg'] as number,
     };
 }
 

@@ -284,4 +284,8 @@ export interface CarPositionPatch {
      * Patch field for SignalBars. Null indicates no change.
      */
     signalBars: number | null;
+    /**
+     * Patch field for GpsHealth. Null indicates no change.
+     */
+    gpsHealth: number | null;
 }

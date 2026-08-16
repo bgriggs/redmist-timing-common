@@ -30,6 +30,15 @@ public class CarPosition
     public const int MaxSignalBars = 5;
 
     /// <summary>
+    /// Nothing usable arriving from this car - the bottom of the <see cref="GpsHealth"/> scale.
+    /// </summary>
+    public const int MinGpsHealth = 0;
+    /// <summary>
+    /// Keeping up with the rest of the field - the top of the <see cref="GpsHealth"/> scale.
+    /// </summary>
+    public const int MaxGpsHealth = 5;
+
+    /// <summary>
     /// Redmist Event ID.
     /// </summary>
     [JsonPropertyName("eid")]
@@ -496,4 +505,32 @@ public class CarPosition
     [Range(MinSignalBars, MaxSignalBars)]
     [MessagePack.Key(67)]
     public int? SignalBars { get; set; }
+    /// <summary>
+    /// How well this car's GPS is keeping up, from <see cref="MinGpsHealth"/> to
+    /// <see cref="MaxGpsHealth"/>, for showing the viewer that a particular car has a connection
+    /// problem. It combines two things <see cref="SignalBars"/> cannot express on its own: how
+    /// often the car is reporting, and how much of what it reports is usable. The lower of the two
+    /// wins, so a car sending flawless data twice a minute rates as poorly as one sending
+    /// unusable data constantly.
+    ///
+    /// Graded against the rest of the field rather than an absolute rate. Measured update rates
+    /// differ by half again between events - a healthy car at one circuit reports at two thirds
+    /// the rate of a healthy car at another - so an absolute scale reads as a fleet-wide failure
+    /// at one event and full marks at the next. Against the field, a low value means the same
+    /// thing everywhere: this car is doing worse than the cars around it, right now. What that
+    /// cannot say is whether the field as a whole is struggling; that is
+    /// <see cref="SessionState.GpsSourceHealth"/>, which is deliberately absolute.
+    ///
+    /// Nothing on the server is gated on this - it exists to be displayed. Trust decisions belong
+    /// to <see cref="SignalBars"/>, which is why the two are kept apart: folding update rate into
+    /// the value that governs whether a position may be published would withhold positions for
+    /// most of the field at an event whose devices are merely slow.
+    ///
+    /// Null means the car has no in-car device at all, as with <see cref="SignalBars"/>, and is
+    /// not the same as <see cref="MinGpsHealth"/> - zero is a device that has gone quiet.
+    /// </summary>
+    [JsonPropertyName("gh")]
+    [Range(MinGpsHealth, MaxGpsHealth)]
+    [MessagePack.Key(68)]
+    public int? GpsHealth { get; set; }
 }

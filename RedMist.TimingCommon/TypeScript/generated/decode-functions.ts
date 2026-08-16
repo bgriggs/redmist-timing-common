@@ -23,6 +23,10 @@ import { VideoDestination } from "./video-destination";
 import { BroadcasterConfig } from "./broadcaster-config";
 import { EventSchedule } from "./event-schedule";
 import { EventScheduleEntry } from "./event-schedule-entry";
+import { TrackMapRender } from "./track-map-render";
+import { TrackMapRenderPoint } from "./track-map-render-point";
+import { TrackMapBounds } from "./track-map-bounds";
+import { TrackMapStartFinish } from "./track-map-start-finish";
 import { Flags } from "./flags";
 import { VideoDestinationType } from "./video-destination-type";
 import { VideoSystemType } from "./video-system-type";
@@ -64,6 +68,7 @@ export function decodeSessionState(a: unknown[]): SessionState {
         trackTempDegF: a[32] as number | null,
         trackPrecipitationPerc: a[33] as number | null,
         hasTelemetrySource: a[34] as boolean,
+        gpsSourceHealth: a[35] as number | null,
     };
 }
 
@@ -83,6 +88,8 @@ export function decodeCarPosition(a: unknown[]): CarPosition {
         invalidTrackPosition: -999,
         minSignalBars: 0,
         maxSignalBars: 5,
+        minGpsHealth: 0,
+        maxGpsHealth: 5,
         eventId: a[0] as string,
         sessionId: a[1] as string,
         number: a[2] as string,
@@ -151,6 +158,7 @@ export function decodeCarPosition(a: unknown[]): CarPosition {
         overallDifferenceByFastTime: a[65] as string,
         lapPositionPercent: a[66] as number | null,
         signalBars: a[67] as number | null,
+        gpsHealth: a[68] as number | null,
     };
 }
 
@@ -327,6 +335,7 @@ export function decodeSessionStatePatch(a: unknown[]): SessionStatePatch {
         trackTempDegF: a[32] as number | null,
         trackPrecipitationPerc: a[33] as number | null,
         hasTelemetrySource: a[34] as boolean | null,
+        gpsSourceHealth: a[35] as number | null,
     };
 }
 
@@ -400,6 +409,7 @@ export function decodeCarPositionPatch(a: unknown[]): CarPositionPatch {
         overallDifferenceByFastTime: a[65] as string,
         lapPositionPercent: a[66] as number | null,
         signalBars: a[67] as number | null,
+        gpsHealth: a[68] as number | null,
     };
 }
 
@@ -440,6 +450,54 @@ export function decodeEventScheduleEntry(a: unknown[]): EventScheduleEntry {
         startTime: a[1] as Date,
         endTime: a[2] as Date,
         name: a[3] as string,
+    };
+}
+
+export function decodeTrackMapRender(a: unknown[]): TrackMapRender {
+    return {
+        eventId: a[0] as number,
+        sessionId: a[1] as number,
+        trackName: a[2] as string,
+        points: (a[3] as unknown[][]).map(decodeTrackMapRenderPoint),
+        bounds: decodeTrackMapBounds(a[4] as unknown[]),
+        lengthMeters: a[5] as number,
+        startFinish: a[6] != null ? decodeTrackMapStartFinish(a[6] as unknown[]) : null,
+        builtUtc: a[7] as Date,
+        version: a[8] as number,
+    };
+}
+
+export function decodeTrackMapRenderPoint(a: unknown[]): TrackMapRenderPoint {
+    return {
+        latitude: a[0] as number,
+        longitude: a[1] as number,
+        x: a[2] as number,
+        y: a[3] as number,
+        cumulativeDistanceMeters: a[4] as number,
+    };
+}
+
+export function decodeTrackMapBounds(a: unknown[]): TrackMapBounds {
+    return {
+        minLatitude: a[0] as number,
+        maxLatitude: a[1] as number,
+        minLongitude: a[2] as number,
+        maxLongitude: a[3] as number,
+        widthMeters: a[4] as number,
+        heightMeters: a[5] as number,
+        centerLatitude: a[6] as number,
+        centerLongitude: a[7] as number,
+    };
+}
+
+export function decodeTrackMapStartFinish(a: unknown[]): TrackMapStartFinish {
+    return {
+        latitude: a[0] as number,
+        longitude: a[1] as number,
+        x: a[2] as number,
+        y: a[3] as number,
+        distanceAlongMeters: a[4] as number,
+        headingDegrees: a[5] as number,
     };
 }
 

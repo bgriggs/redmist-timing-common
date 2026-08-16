@@ -169,4 +169,26 @@ export interface SessionState {
      * rather than showing a field of empty bars.
      */
     hasTelemetrySource: boolean;
+    /**
+     * How well the in-car telemetry source is keeping up across the field as a whole, from
+     * @see {@link RedMist.TimingCommon.Models.CarPosition.MinGpsHealth} to @see {@link RedMist.TimingCommon.Models.CarPosition.MaxGpsHealth}. Where
+     * @see {@link RedMist.TimingCommon.Models.SessionState.HasTelemetrySource} says whether anything is arriving, this says how well.
+     * 
+     * Measured against the once-a-second update the devices are specified to send, so the value
+     * means the same thing at every event and can be compared between them. That is the opposite
+     * choice from @see {@link RedMist.TimingCommon.Models.CarPosition.GpsHealth}, and deliberately: a per-car figure is
+     * useful for picking the one car that is struggling out of a field, which needs the field as
+     * its reference, while a fleet-wide figure is only useful if a bad day reads worse than a
+     * good one.
+     * 
+     * Expect middling values in practice. Across the events measured so far the field sustains
+     * between a third and a half of the specified rate, which reads as two to four - so the top
+     * of the scale describes equipment performing to specification rather than anything yet
+     * observed, and a fall from four to two is the signal worth reacting to.
+     * 
+     * Null when no in-car telemetry source is feeding the session, matching
+     * @see {@link RedMist.TimingCommon.Models.SessionState.HasTelemetrySource} being false; clients should omit the indicator entirely
+     * rather than drawing it empty.
+     */
+    gpsSourceHealth: number | null;
 }
