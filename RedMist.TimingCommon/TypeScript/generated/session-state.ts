@@ -186,9 +186,13 @@ export interface SessionState {
      * of the scale describes equipment performing to specification rather than anything yet
      * observed, and a fall from four to two is the signal worth reacting to.
      * 
-     * Null when no in-car telemetry source is feeding the session, matching
-     * @see {@link RedMist.TimingCommon.Models.SessionState.HasTelemetrySource} being false; clients should omit the indicator entirely
-     * rather than drawing it empty.
+     * Null until a grade has been made, and never again afterwards. A patch carries "no change"
+     * as null, so there is no way to send "there is no longer a grade" - the value holds the last
+     * one made rather than being withdrawn, and goes stale whenever nothing is measurable: the
+     * source stops feeding, or the field on track shrinks below the handful of cars a fleet rate
+     * needs. @see {@link RedMist.TimingCommon.Models.SessionState.HasTelemetrySource} is what withdraws the display, and it does go false
+     * when the source stops. Clients must gate on it rather than waiting for this to clear, and
+     * should omit the indicator entirely while it is false rather than drawing a stale grade.
      */
     gpsSourceHealth: number | null;
 }
