@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -289,10 +290,23 @@ namespace RedMist.PatchGenerator
             sourceBuilder.AppendLine("    /// Generated automatically by PatchClassGenerator.");
             sourceBuilder.AppendLine("    /// </summary>");
 
+            // Worked out once, because the attribute and the formatter it points at have to agree
+            // about whether there is a wire contract to write at all.
+            var keyedProperties = BuildKeyMap(classInfo);
+            var hasFormatter = classInfo.IncludeMessagePack && keyedProperties.Count > 0;
+
             // Add MessagePack attribute if enabled
             if (classInfo.IncludeMessagePack)
             {
                 sourceBuilder.AppendLine("    [MessagePackObject]");
+
+                if (hasFormatter)
+                {
+                    // Points AttributeFormatterResolver at the formatter emitted below. Without this the
+                    // only thing that can serialize this class is DynamicObjectResolver, which builds a
+                    // formatter by emitting IL and is therefore absent wherever there is no JIT.
+                    sourceBuilder.AppendLine($"    [MessagePackFormatter(typeof({FormatterName(classInfo)}))]");
+                }
             }
 
             sourceBuilder.AppendLine($"    public class {classInfo.PatchClassName}");
@@ -331,38 +345,188 @@ namespace RedMist.PatchGenerator
                     sourceBuilder.AppendLine($"        {attributeString}");
                 }
 
-                // Generate nullable property type with safer handling
-                var typeName = prop.TypeName.Trim();
-                
-                // Handle nullable types properly - don't make already nullable types double-nullable
-                string nullableType;
-                if (prop.IsAlreadyNullable)
-                {
-                    // Type is already nullable, use as-is
-                    nullableType = typeName;
-                }
-                else if (prop.IsReferenceType)
-                {
-                    // Reference types get ?
-                    nullableType = $"{typeName}?";
-                }
-                else
-                {
-                    // Value types get ?
-                    nullableType = $"{typeName}?";
-                }
-                
-                sourceBuilder.AppendLine($"        public {nullableType} {prop.Name} {{ get; set; }}");
+                sourceBuilder.AppendLine($"        public {NullablePatchType(prop)} {prop.Name} {{ get; set; }}");
                 sourceBuilder.AppendLine();
             }
 
             sourceBuilder.AppendLine("    }");
+
+            if (hasFormatter)
+            {
+                sourceBuilder.AppendLine();
+                AppendMessagePackFormatter(sourceBuilder, classInfo, keyedProperties);
+            }
+
             sourceBuilder.AppendLine("}");
 
             // Create the source text with explicit encoding
             var sourceCode = sourceBuilder.ToString();
             var sourceText = SourceText.From(sourceCode, Encoding.UTF8);
             context.AddSource($"{classInfo.PatchClassName}.g.cs", sourceText);
+        }
+
+        private static string FormatterName(ClassToGenerate classInfo) => $"{classInfo.PatchClassName}Formatter";
+
+        /// <summary>
+        /// The patch class's type for a property: the source type, made nullable unless it already is.
+        /// </summary>
+        private static string NullablePatchType(PropertyInfo prop)
+        {
+            var typeName = prop.TypeName.Trim();
+            return prop.IsAlreadyNullable ? typeName : $"{typeName}?";
+        }
+
+        /// <summary>
+        /// Reads the MessagePack array index off a property, which the patch class copies from its
+        /// source. Properties without one are not part of the wire contract.
+        /// </summary>
+        private static bool TryGetMessagePackKey(PropertyInfo prop, out int key)
+        {
+            key = -1;
+            foreach (var attr in prop.Attributes)
+            {
+                if (attr.Name != "MessagePack.Key" || attr.Arguments.Length == 0)
+                    continue;
+                if (int.TryParse(attr.Arguments[0]?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out key))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// The patch class's wire layout: which property occupies each MessagePack array slot.
+        /// </summary>
+        /// <remarks>
+        /// Empty when no property carries a <c>[Key]</c>, which is what a source model using
+        /// key-as-property-name looks like. That is a map-form contract this emitter does not write,
+        /// so the caller skips both the formatter and the attribute naming it, and the patch class
+        /// falls back to whatever resolver the runtime can offer - as it did before any of this.
+        /// A duplicate key never reaches here: MessagePack's own analyzer rejects it on the source
+        /// class first.
+        /// </remarks>
+        private static Dictionary<int, PropertyInfo> BuildKeyMap(ClassToGenerate classInfo)
+        {
+            var byKey = new Dictionary<int, PropertyInfo>();
+            foreach (var prop in classInfo.Properties)
+            {
+                if (string.IsNullOrWhiteSpace(prop.Name) || string.IsNullOrWhiteSpace(prop.TypeName))
+                    continue;
+                if (TryGetMessagePackKey(prop, out var key) && !byKey.ContainsKey(key))
+                    byKey.Add(key, prop);
+            }
+
+            return byKey;
+        }
+
+        /// <summary>
+        /// Writes an explicit <c>IMessagePackFormatter</c> for the patch class.
+        /// </summary>
+        /// <remarks>
+        /// MessagePack's own source generator would normally do this, but it cannot see this class:
+        /// the class is generated, and Roslyn source generators do not observe each other's output.
+        /// That leaves DynamicObjectResolver as the only thing able to serialize it, and that
+        /// resolver builds formatters by emitting IL, so it is dropped from the standard resolver
+        /// chain wherever RuntimeFeature.IsDynamicCodeSupported is false - iOS above all, which is
+        /// full AOT with no JIT. Writing the formatter out here keeps the type serializable there.
+        ///
+        /// The layout is MessagePack's array form, matching what [Key(int)] on every member asks
+        /// for: one slot per index from zero to the highest key, with nil written into any index no
+        /// property claims, so the slot numbering survives a member being removed.
+        ///
+        /// Members go through <c>options.Resolver.GetFormatterWithVerify</c> rather than
+        /// <c>MessagePackSerializer.Serialize</c>. That is not a style choice: the serializer entry
+        /// point is a top-level one, and with compression configured it would LZ4-wrap every member
+        /// individually inside the block the outer call already makes, which no other reader can
+        /// decode. Asking the resolver writes the member and nothing else. Resolving by the member's
+        /// static type is also what keeps this usable with no JIT - nothing has to look a formatter
+        /// up from a <c>Type</c> at runtime.
+        /// </remarks>
+        private static void AppendMessagePackFormatter(StringBuilder sourceBuilder, ClassToGenerate classInfo, Dictionary<int, PropertyInfo> byKey)
+        {
+            var patchType = classInfo.PatchClassName;
+            var formatterType = FormatterName(classInfo);
+            var slotCount = byKey.Keys.Max() + 1;
+
+            sourceBuilder.AppendLine("    /// <summary>");
+            sourceBuilder.AppendLine($"    /// MessagePack formatter for <see cref=\"{patchType}\"/>, so the type stays serializable");
+            sourceBuilder.AppendLine("    /// on runtimes that cannot generate code. Generated by PatchClassGenerator.");
+            sourceBuilder.AppendLine("    /// </summary>");
+            sourceBuilder.AppendLine($"    internal sealed class {formatterType} : global::MessagePack.Formatters.IMessagePackFormatter<{patchType}?>");
+            sourceBuilder.AppendLine("    {");
+
+            // MessagePack activates a formatter by its parameterless constructor, falling back to a
+            // public static readonly Instance. The constructor is the weaker of the two under
+            // trimming - MessagePackFormatterAttribute carries no DynamicallyAccessedMembers, so a
+            // trimmer keeps the type without necessarily keeping the constructor - and this field
+            // lands in the static constructor, which survives with the type.
+            sourceBuilder.AppendLine($"        public static readonly {formatterType} Instance = new {formatterType}();");
+            sourceBuilder.AppendLine();
+
+            // Serialize
+            sourceBuilder.AppendLine($"        public void Serialize(ref global::MessagePack.MessagePackWriter writer, {patchType}? value, global::MessagePack.MessagePackSerializerOptions options)");
+            sourceBuilder.AppendLine("        {");
+            sourceBuilder.AppendLine("            if (value is null)");
+            sourceBuilder.AppendLine("            {");
+            sourceBuilder.AppendLine("                writer.WriteNil();");
+            sourceBuilder.AppendLine("                return;");
+            sourceBuilder.AppendLine("            }");
+            sourceBuilder.AppendLine();
+            sourceBuilder.AppendLine($"            writer.WriteArrayHeader({slotCount});");
+            for (var slot = 0; slot < slotCount; slot++)
+            {
+                if (byKey.TryGetValue(slot, out var prop))
+                {
+                    sourceBuilder.AppendLine($"            global::MessagePack.FormatterResolverExtensions.GetFormatterWithVerify<{NullablePatchType(prop)}>(options.Resolver).Serialize(ref writer, value.{prop.Name}, options);");
+                }
+                else
+                {
+                    sourceBuilder.AppendLine($"            writer.WriteNil(); // key {slot} is unused");
+                }
+            }
+            sourceBuilder.AppendLine("        }");
+            sourceBuilder.AppendLine();
+
+            // Deserialize
+            sourceBuilder.AppendLine($"        public {patchType}? Deserialize(ref global::MessagePack.MessagePackReader reader, global::MessagePack.MessagePackSerializerOptions options)");
+            sourceBuilder.AppendLine("        {");
+            sourceBuilder.AppendLine("            if (reader.TryReadNil())");
+            sourceBuilder.AppendLine("            {");
+            sourceBuilder.AppendLine("                return null;");
+            sourceBuilder.AppendLine("            }");
+            sourceBuilder.AppendLine();
+            sourceBuilder.AppendLine("            options.Security.DepthStep(ref reader);");
+            sourceBuilder.AppendLine("            try");
+            sourceBuilder.AppendLine("            {");
+            sourceBuilder.AppendLine($"                var result = new {patchType}();");
+            sourceBuilder.AppendLine("                var count = reader.ReadArrayHeader();");
+            sourceBuilder.AppendLine("                for (var i = 0; i < count; i++)");
+            sourceBuilder.AppendLine("                {");
+            sourceBuilder.AppendLine("                    switch (i)");
+            sourceBuilder.AppendLine("                    {");
+            for (var slot = 0; slot < slotCount; slot++)
+            {
+                if (!byKey.TryGetValue(slot, out var prop))
+                    continue;
+                sourceBuilder.AppendLine($"                        case {slot}:");
+                sourceBuilder.AppendLine($"                            result.{prop.Name} = global::MessagePack.FormatterResolverExtensions.GetFormatterWithVerify<{NullablePatchType(prop)}>(options.Resolver).Deserialize(ref reader, options);");
+                sourceBuilder.AppendLine("                            break;");
+            }
+            // A newer sender can carry slots this build has never heard of.
+            sourceBuilder.AppendLine("                        default:");
+            sourceBuilder.AppendLine("                            reader.Skip();");
+            sourceBuilder.AppendLine("                            break;");
+            sourceBuilder.AppendLine("                    }");
+            sourceBuilder.AppendLine("                }");
+            sourceBuilder.AppendLine();
+            sourceBuilder.AppendLine("                return result;");
+            sourceBuilder.AppendLine("            }");
+            sourceBuilder.AppendLine("            finally");
+            sourceBuilder.AppendLine("            {");
+            sourceBuilder.AppendLine("                reader.Depth--;");
+            sourceBuilder.AppendLine("            }");
+            sourceBuilder.AppendLine("        }");
+            sourceBuilder.AppendLine("    }");
         }
 
         private static void GenerateMapper(SourceProductionContext context, ClassToGenerate classInfo)

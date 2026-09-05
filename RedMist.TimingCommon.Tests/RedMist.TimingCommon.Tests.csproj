@@ -17,6 +17,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\RedMist.TimingCommon\RedMist.TimingCommon.csproj" />
+		<!-- Runs the patch generator over this project too, so its output can be tested against
+		     shapes the shipping models do not currently have - notably a gap in the MessagePack key
+		     sequence, which is what a removed member leaves behind. -->
+		<ProjectReference Include="..\RedMist.PatchGenerator\RedMist.PatchGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 	<ItemGroup>
