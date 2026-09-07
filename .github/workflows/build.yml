@@ -17,9 +17,24 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 10.0.x
+    # EnableTypeScriptGeneration is off by default so that the shipped assembly carries no TypeGen
+    # reference - see the comment in RedMist.TimingCommon.csproj. It is turned on here, and only
+    # here, for two reasons: the generation spec is compiled, so a model change that breaks it fails
+    # the build rather than waiting until someone next regenerates; and the generated TypeScript is
+    # rewritten, so the check below can tell whether what is committed still matches the models.
+    # The publish workflow deliberately does not set it, and is what actually packs the package.
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore -p:EnableTypeScriptGeneration=true
     - name: Restore dotnet tools
       run: dotnet tool restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore -p:EnableTypeScriptGeneration=true
+    # Staged first, because git diff on the working tree compares tracked files only and a
+    # regeneration that adds a file leaves it untracked and invisible. Adding an enum to the spec
+    # is exactly that case - it emits a new .ts and touches nothing already committed - so the
+    # unstaged form passed while the repo was missing generated output. Diffing the index sees
+    # additions, modifications and deletions alike.
+    - name: Check generated TypeScript is up to date
+      run: |
+        git add -A -- RedMist.TimingCommon/TypeScript/generated
+        git diff --cached --exit-code -- RedMist.TimingCommon/TypeScript/generated

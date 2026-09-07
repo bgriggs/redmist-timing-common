@@ -12,13 +12,53 @@
 		<NoWarn>$(NoWarn);1591</NoWarn>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Copyright>2024-2026</Copyright>
-		<Version>1.17.1</Version>
+		<Version>1.17.2</Version>
+
+		<!-- Off unless a build is actually regenerating TypeScript. See the TypeScript item group. -->
+		<EnableTypeScriptGeneration Condition="'$(EnableTypeScriptGeneration)' == ''">false</EnableTypeScriptGeneration>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="MessagePack" Version="3.1.8" />
 		<PackageReference Include="Riok.Mapperly" Version="4.3.1" />
+	</ItemGroup>
+
+	<!-- The TypeScript generation spec is build-time tooling, and it is compiled only when it is
+	     being used. What it costs the rest of the time is a TypeGen reference in an assembly that
+	     every consumer of this package has to carry.
+
+	     TypeGen 7.0.0's net10.0 dependency group is empty, so the Newtonsoft.Json that TypeGen.Core
+	     carries an assembly reference to is never restored beside it. Anything that walks the
+	     assemblies it ships then hits a reference nothing brought in: both mobile heads of the
+	     timing UI AOT compile, and both failed on it. They worked around it by excluding TypeGen's
+	     assets, which held only while the trimmer happened to be deleting the spec classes that
+	     needed it. When this package stopped being trimmed - so its MessagePack formatters would
+	     survive, without which live timing silently stops - the spec classes survived too, and
+	     Android's AOT step broke on a clean build.
+
+	     Compiling the spec out is what actually removes the dependency, rather than moving it
+	     downstream again. It stays in this project rather than a build-time one of its own because
+	     TypeGen reads nullable annotations out of the assembly it scans: run against a project that
+	     merely references this one, it resolves the models through a different assembly graph and
+	     silently drops nullability, turning "Date | null" into "Date" across the generated output.
+
+	     To regenerate:  dotnet build RedMist.TimingCommon -p:EnableTypeScriptGeneration=true
+	     CI does this on every build, so a model change that breaks the spec still fails there. -->
+	<ItemGroup Condition="'$(EnableTypeScriptGeneration)' == 'true'">
 		<PackageReference Include="TypeGen" Version="7.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(EnableTypeScriptGeneration)' != 'true'">
+		<Compile Remove="TypeScript/**/*.cs" />
+
+		<!-- Put back as None, or these files would belong to no item group at all: the SDK's default
+		     None glob excludes **/*.cs, so removing them from Compile drops them out of the project
+		     entirely. They would then be invisible in Solution Explorer on a normal load, and - the
+		     part that actually bites - invisible to Roslyn, so renaming a model type would silently
+		     skip the spec and no analyzer or nullable warning would reach it. The spec would break
+		     on the developer's machine and only surface after a push. None is not packed without
+		     Pack="true", so this ships nothing. -->
+		<None Include="TypeScript/**/*.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -29,7 +69,7 @@
 		<None Include="README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-	<Target Name="GenerateTypeScript" AfterTargets="Build">
+	<Target Name="GenerateTypeScript" AfterTargets="Build" Condition="'$(EnableTypeScriptGeneration)' == 'true'">
 		<Exec Command="dotnet tool run dotnet-typegen generate" WorkingDirectory="$(ProjectDir)" />
 	</Target>
 </Project>
