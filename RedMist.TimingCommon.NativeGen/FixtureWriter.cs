@@ -42,10 +42,12 @@ internal sealed class FixtureWriter(TypeCatalog catalog)
         }
     }
 
-    private object? Populate(Type type, int depth)
+    private readonly System.Reflection.NullabilityInfoContext nullability = new();
+
+    private object? Populate(Type type, int depth, bool elementNullable = false)
     {
         var underlying = Nullable.GetUnderlyingType(type);
-        if (underlying != null) return Populate(underlying, depth);
+        if (underlying != null) return Populate(underlying, depth, elementNullable);
 
         var n = ++counter;
         if (type == typeof(int)) return n;
@@ -82,7 +84,11 @@ internal sealed class FixtureWriter(TypeCatalog catalog)
             var listType = typeof(List<>).MakeGenericType(element);
             var list = (IList)Activator.CreateInstance(listType)!;
             if (depth < 3)
+            {
                 list.Add(Populate(element, depth + 1));
+                // Only where the model allows it, as the server would only send it there.
+                if (elementNullable) list.Add(null);
+            }
             if (type.IsArray)
             {
                 var array = Array.CreateInstance(element, list.Count);
@@ -105,7 +111,7 @@ internal sealed class FixtureWriter(TypeCatalog catalog)
             var instance = Activator.CreateInstance(type)!;
             if (depth >= 3) return instance;
             foreach (var p in TypeCatalog.WireProperties(type).Where(p => p.CanWrite))
-                p.SetValue(instance, Populate(p.PropertyType, depth + 1));
+                p.SetValue(instance, Populate(p.PropertyType, depth + 1, TypeCatalog.ElementNullable(p, nullability)));
             return instance;
         }
 

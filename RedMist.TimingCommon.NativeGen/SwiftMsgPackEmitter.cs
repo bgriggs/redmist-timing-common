@@ -44,7 +44,7 @@ internal sealed class SwiftMsgPackEmitter(TypeCatalog catalog)
                 {
                     var member = Naming.Member(p.Name);
                     var slot = t.IsKeyed ? $"a.slot({p.Key})" : $"m[\"{p.MapKey}\"]?.nonNil";
-                    var expr = Decode(Nullable.GetUnderlyingType(p.ClrType) ?? p.ClrType, "$0");
+                    var expr = Decode(Nullable.GetUnderlyingType(p.ClrType) ?? p.ClrType, "$0", p.ElementNullable);
                     var def = SwiftDefault(p);
                     if (!p.IsNullable)
                         return $"            {member}: {slot}.map {{ {expr} }} ?? {def}";
@@ -75,7 +75,7 @@ internal sealed class SwiftMsgPackEmitter(TypeCatalog catalog)
         return sb.ToString();
     }
 
-    private string Decode(Type type, string v)
+    private string Decode(Type type, string v, bool elementNullable = false)
     {
         if (type == typeof(int) || type == typeof(short) || type == typeof(ushort) || type == typeof(byte) || type == typeof(sbyte)
             || type == typeof(uint) || type == typeof(long) || type == typeof(ulong)) return $"{v}.intValue";
@@ -86,9 +86,13 @@ internal sealed class SwiftMsgPackEmitter(TypeCatalog catalog)
         if (type == typeof(TimeOnly)) return $"{v}.timeOnlyValue";
         if (type.IsEnum) return $"{catalog.Names[type]}(rawValue: {v}.intValue) ?? .{Naming.EnumCase(FallbackCase(type))}";
         if (KotlinEmitter.ElementType(type) is { } element)
-            return $"({v}.arrayValue ?? []).map {{ e in {Decode(element, "e")} }}";
+            return elementNullable
+                ? $"({v}.arrayValue ?? []).map {{ e in e.nonNil.map {{ x in {Decode(Nullable.GetUnderlyingType(element) ?? element, "x")} }} }}"
+                : $"({v}.arrayValue ?? []).map {{ e in {Decode(element, "e")} }}";
         if (KotlinEmitter.IsDictionary(type, out var key, out var value))
-            return $"Dictionary(({v}.mapValue ?? []).map {{ p in ({Decode(key, "p.key")}, {Decode(value, "p.value")}) }}, uniquingKeysWith: {{ _, last in last }})";
+            return elementNullable
+                ? $"Dictionary(({v}.mapValue ?? []).map {{ p in ({Decode(key, "p.key")}, p.value.nonNil.map {{ x in {Decode(Nullable.GetUnderlyingType(value) ?? value, "x")} }}) }}, uniquingKeysWith: {{ _, last in last }})"
+                : $"Dictionary(({v}.mapValue ?? []).map {{ p in ({Decode(key, "p.key")}, {Decode(value, "p.value")}) }}, uniquingKeysWith: {{ _, last in last }})";
         if (catalog.IsClass(type)) return $"{catalog.Names[type]}(msgpack: {v})";
         throw new NotSupportedException($"No Swift MessagePack decoding for {type}");
     }

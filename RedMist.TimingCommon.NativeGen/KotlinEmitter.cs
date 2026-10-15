@@ -107,7 +107,7 @@ internal sealed class KotlinEmitter(TypeCatalog catalog, string package)
         var lines = t.Props.Select(p =>
         {
             var serializer = InstantSerializerAnnotation(p.ClrType);
-            return $"    @SerialName(\"{p.JsonKey}\"){serializer} val {Naming.Member(p.Name)}: {KType(p.ClrType, p.IsNullable)} = {Default(p)}";
+            return $"    @SerialName(\"{p.JsonKey}\"){serializer} val {Naming.Member(p.Name)}: {KType(p.ClrType, p.IsNullable, p.ElementNullable)} = {Default(p)}";
         });
         sb.AppendLine(string.Join(",\n", lines));
         sb.Append(')');
@@ -195,7 +195,7 @@ internal sealed class KotlinEmitter(TypeCatalog catalog, string package)
             sb.AppendLine(string.Join(",\n", t.Props.Select(p =>
             {
                 var slot = t.IsKeyed ? $"a.slot({p.Key})" : $"m[\"{p.MapKey}\"].orNil()";
-                var expr = Decode(p.ClrType, "it");
+                var expr = Decode(p.ClrType, "it", p.ElementNullable);
                 var member = Naming.Member(p.Name);
                 if (!p.IsNullable)
                     return $"            {member} = {slot}?.let {{ {expr} }} ?: {Default(p)}";
@@ -250,7 +250,7 @@ internal sealed class KotlinEmitter(TypeCatalog catalog, string package)
         return sb.ToString();
     }
 
-    private string Decode(Type type, string v)
+    private string Decode(Type type, string v, bool elementNullable = false)
     {
         type = Nullable.GetUnderlyingType(type) ?? type;
         if (type == typeof(int) || type == typeof(short) || type == typeof(ushort) || type == typeof(byte) || type == typeof(sbyte)) return $"{v}.int()";
@@ -262,18 +262,24 @@ internal sealed class KotlinEmitter(TypeCatalog catalog, string package)
         if (type == typeof(DateTime)) return $"{v}.instant()";
         if (type == typeof(TimeOnly)) return $"{v}.timeOnly()";
         if (type.IsEnum) return $"{catalog.Names[type]}.fromValue({v}.int())";
-        if (ElementType(type) is { } element) return $"{v}.list {{ e -> {Decode(element, "e")} }}";
-        if (IsDictionary(type, out var k, out var val)) return $"{v}.mapOf({{ k -> {Decode(k, "k")} }}, {{ e -> {Decode(val, "e")} }})";
+        if (ElementType(type) is { } element)
+            return elementNullable
+                ? $"{v}.list {{ e -> if (e.isNilValue) null else {Decode(element, "e")} }}"
+                : $"{v}.list {{ e -> {Decode(element, "e")} }}";
+        if (IsDictionary(type, out var k, out var val))
+            return elementNullable
+                ? $"{v}.mapOf({{ k -> {Decode(k, "k")} }}, {{ e -> if (e.isNilValue) null else {Decode(val, "e")} }})"
+                : $"{v}.mapOf({{ k -> {Decode(k, "k")} }}, {{ e -> {Decode(val, "e")} }})";
         if (catalog.IsClass(type)) return $"decode{catalog.Names[type]}({v})";
         throw new NotSupportedException($"No Kotlin MessagePack decoding for {type}");
     }
 
     // ----- Types and defaults -----
 
-    private string KType(Type type, bool nullable)
+    private string KType(Type type, bool nullable, bool elementNullable = false)
     {
         var u = Nullable.GetUnderlyingType(type);
-        if (u != null) return KType(u, false) + "?";
+        if (u != null) return KType(u, false, elementNullable) + "?";
         var name = type switch
         {
             _ when type == typeof(int) || type == typeof(short) || type == typeof(ushort) || type == typeof(byte) || type == typeof(sbyte) => "Int",
@@ -283,8 +289,8 @@ internal sealed class KotlinEmitter(TypeCatalog catalog, string package)
             _ when type == typeof(string) || type == typeof(TimeOnly) => "String",
             _ when type == typeof(DateTime) => "Instant",
             _ when type.IsEnum => catalog.Names[type],
-            _ when ElementType(type) is { } e => $"List<{KType(e, false)}>",
-            _ when IsDictionary(type, out var k, out var v) => $"Map<{KType(k, false)}, {KType(v, false)}>",
+            _ when ElementType(type) is { } e => $"List<{KType(e, elementNullable && Nullable.GetUnderlyingType(e) == null)}>",
+            _ when IsDictionary(type, out var k, out var v) => $"Map<{KType(k, false)}, {KType(v, elementNullable && Nullable.GetUnderlyingType(v) == null)}>",
             _ when catalog.IsClass(type) => catalog.Names[type],
             _ => throw new NotSupportedException($"No Kotlin type for {type}")
         };

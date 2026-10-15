@@ -18,7 +18,8 @@ internal sealed record PropModel(
     int? Key,
     string JsonKey,
     string MapKey,
-    object? DefaultValue);
+    object? DefaultValue,
+    bool ElementNullable = false);
 
 internal sealed record ConstModel(string Name, Type ClrType, object? Value);
 
@@ -199,7 +200,8 @@ internal sealed class TypeCatalog
             var isNullable = Nullable.GetUnderlyingType(p.PropertyType) != null
                              || (!p.PropertyType.IsValueType && nullability.Create(p).ReadState == NullabilityState.Nullable);
             var jsonKey = p.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? JsonNamingPolicy.CamelCase.ConvertName(p.Name);
-            props.Add(new PropModel(p, p.Name, p.PropertyType, isNullable, key, jsonKey, keyAttr?.StringKey ?? p.Name, empty != null ? p.GetValue(empty) : null));
+            props.Add(new PropModel(p, p.Name, p.PropertyType, isNullable, key, jsonKey, keyAttr?.StringKey ?? p.Name, empty != null ? p.GetValue(empty) : null,
+                ElementNullable(p, nullability)));
         }
 
         if (isKeyed)
@@ -212,6 +214,27 @@ internal sealed class TypeCatalog
             .ToList();
 
         return new TypeModel(type, Names[type], isKeyed, props, consts, null);
+    }
+
+    /// <summary>
+    /// Whether a list's elements, or a dictionary's values, may be null: <c>List&lt;CarStatus?&gt;</c>
+    /// holds nulls on the wire, and the generated element type must be optional to decode it.
+    /// </summary>
+    internal static bool ElementNullable(PropertyInfo p, NullabilityInfoContext context)
+    {
+        var type = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
+        Type? element = KotlinEmitter.ElementType(type);
+        var index = 0;
+        if (element == null && KotlinEmitter.IsDictionary(type, out _, out var value))
+        {
+            element = value;
+            index = 1;
+        }
+        if (element == null) return false;
+        if (Nullable.GetUnderlyingType(element) != null) return true;
+        var info = context.Create(p);
+        var args = type.IsArray ? (info.ElementType != null ? [info.ElementType] : []) : info.GenericTypeArguments;
+        return args.Length > index && args[index].ReadState == NullabilityState.Nullable;
     }
 
     internal static IEnumerable<PropertyInfo> WireProperties(Type type) =>

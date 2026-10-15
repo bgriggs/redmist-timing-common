@@ -127,12 +127,12 @@ internal sealed class SwiftEmitter(TypeCatalog catalog)
         if (t.Consts.Count > 0) sb.AppendLine();
 
         foreach (var p in t.Props)
-            sb.AppendLine($"    public var {Naming.Member(p.Name)}: {SType(p.ClrType, p.IsNullable)}");
+            sb.AppendLine($"    public var {Naming.Member(p.Name)}: {SType(p.ClrType, p.IsNullable, p.ElementNullable)}");
         sb.AppendLine();
 
         // Memberwise init with the C# defaults, so callers and tests can build partial values.
         sb.AppendLine("    public init(");
-        sb.AppendLine(string.Join(",\n", t.Props.Select(p => $"        {Naming.Member(p.Name)}: {SType(p.ClrType, p.IsNullable)} = {Default(p)}")));
+        sb.AppendLine(string.Join(",\n", t.Props.Select(p => $"        {Naming.Member(p.Name)}: {SType(p.ClrType, p.IsNullable, p.ElementNullable)} = {Default(p)}")));
         sb.AppendLine("    ) {");
         foreach (var p in t.Props)
             sb.AppendLine($"        self.{Naming.Member(p.Name)} = {Naming.Member(p.Name)}");
@@ -157,7 +157,7 @@ internal sealed class SwiftEmitter(TypeCatalog catalog)
             {
                 var m = Naming.Member(p.Name);
                 // The element type to decode: decodeIfPresent adds the optional itself.
-                var decodeType = SType(Nullable.GetUnderlyingType(p.ClrType) ?? p.ClrType, false);
+                var decodeType = SType(Nullable.GetUnderlyingType(p.ClrType) ?? p.ClrType, false, p.ElementNullable);
                 if (!p.IsNullable)
                     sb.AppendLine($"        {m} = try c.decodeIfPresent({decodeType}.self, forKey: .{m}) ?? {Default(p)}");
                 else if (p.DefaultValue != null)
@@ -198,10 +198,10 @@ internal sealed class SwiftEmitter(TypeCatalog catalog)
         sb.AppendLine();
     }
 
-    private string SType(Type type, bool nullable)
+    private string SType(Type type, bool nullable, bool elementNullable = false)
     {
         var u = Nullable.GetUnderlyingType(type);
-        if (u != null) return SType(u, false) + "?";
+        if (u != null) return SType(u, false, elementNullable) + "?";
         var name = type switch
         {
             _ when type == typeof(int) || type == typeof(short) || type == typeof(ushort) || type == typeof(byte) || type == typeof(sbyte)
@@ -211,8 +211,8 @@ internal sealed class SwiftEmitter(TypeCatalog catalog)
             _ when type == typeof(string) || type == typeof(TimeOnly) => "String",
             _ when type == typeof(DateTime) => "Date",
             _ when type.IsEnum => catalog.Names[type],
-            _ when KotlinEmitter.ElementType(type) is { } e => $"[{SType(e, false)}]",
-            _ when KotlinEmitter.IsDictionary(type, out var k, out var v) => $"[{SType(k, false)}: {SType(v, false)}]",
+            _ when KotlinEmitter.ElementType(type) is { } e => $"[{SType(e, elementNullable && Nullable.GetUnderlyingType(e) == null)}]",
+            _ when KotlinEmitter.IsDictionary(type, out var k, out var v) => $"[{SType(k, false)}: {SType(v, elementNullable && Nullable.GetUnderlyingType(v) == null)}]",
             _ when catalog.IsClass(type) => catalog.Names[type],
             _ => throw new NotSupportedException($"No Swift type for {type}")
         };
