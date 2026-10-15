@@ -56,15 +56,22 @@ internal sealed class SwiftEmitter(TypeCatalog catalog)
                     var value = text
                     let hasZone = value.hasSuffix("Z") || value.range(of: #"[+-]\d{2}:\d{2}$"#, options: .regularExpression) != nil
                     if !hasZone { value += "Z" }
-                    // ISO8601DateFormatter takes at most millisecond precision; .NET writes up to 7 digits.
+                    // The fraction is cut to whole milliseconds and added to the whole-second date, so the
+                    // result is the same Double the MessagePack timestamp path builds.
+                    var milliseconds = 0
                     if let dot = value.firstIndex(of: ".") {
                         let digitsEnd = value[dot...].dropFirst().firstIndex(where: { !$0.isNumber }) ?? value.endIndex
-                        let digits = value[value.index(after: dot)..<digitsEnd]
-                        if digits.count > 3 {
-                            value.replaceSubrange(value.index(after: dot)..<digitsEnd, with: digits.prefix(3))
-                        }
+                        let digits = String(value[value.index(after: dot)..<digitsEnd].prefix(3))
+                        milliseconds = Int(digits.padding(toLength: 3, withPad: "0", startingAt: 0)) ?? 0
+                        value.removeSubrange(dot..<digitsEnd)
                     }
-                    return withFraction.date(from: value) ?? plain.date(from: value)
+                    guard let whole = plain.date(from: value) else { return nil }
+                    return dateFrom(seconds: Int64(whole.timeIntervalSince1970), milliseconds: milliseconds)
+                }
+
+                /// The one way both decoders build a Date, so equal instants compare equal.
+                static func dateFrom(seconds: Int64, milliseconds: Int) -> Date {
+                    Date(timeIntervalSince1970: Double(seconds) + Double(milliseconds) / 1000)
                 }
 
                 // ISO8601DateFormatter is thread-safe for parsing once configured.
@@ -211,6 +218,8 @@ internal sealed class SwiftEmitter(TypeCatalog catalog)
         };
         return nullable ? name + "?" : name;
     }
+
+    internal string DefaultFor(PropModel p) => Default(p);
 
     private string Default(PropModel p)
     {

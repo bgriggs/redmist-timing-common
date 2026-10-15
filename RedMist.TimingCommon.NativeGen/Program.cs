@@ -14,6 +14,7 @@ var kotlinPackage = args.Length > 1 ? args[1] : "com.bigmissionmotorsports.redmi
 var catalog = TypeCatalog.Build();
 new KotlinEmitter(catalog, kotlinPackage).Write(Path.Combine(output, "kotlin"));
 new SwiftEmitter(catalog).Write(Path.Combine(output, "swift"));
+new SwiftMsgPackEmitter(catalog).Write(Path.Combine(output, "swift"));
 new FixtureWriter(catalog).Write(Path.Combine(output, "fixtures"));
 
 Console.WriteLine($"{catalog.Classes.Count} classes, {catalog.Enums.Count} enums -> {output}");
