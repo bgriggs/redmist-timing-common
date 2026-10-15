@@ -44,12 +44,15 @@ internal sealed class SwiftEmitter(TypeCatalog catalog)
                     let encoder = JSONEncoder()
                     encoder.dateEncodingStrategy = .custom { date, e in
                         var c = e.singleValueContainer()
-                        try c.encode(withFraction.string(from: date))
+                        // The formatter's Julian calendar would write MinValue as 0001-01-03.
+                        try c.encode(date == dotNetMinDate ? "0001-01-01T00:00:00Z" : withFraction.string(from: date))
                     }
                     return encoder
                 }
 
                 public static func parseDotNetDate(_ text: String) -> Date? {
+                    // Foundation switches to the Julian calendar before 1582, so DateTime.MinValue would land 2 days off.
+                    if text.hasPrefix("0001-01-01T00:00:00") { return dotNetMinDate }
                     var value = text
                     let hasZone = value.hasSuffix("Z") || value.range(of: #"[+-]\d{2}:\d{2}$"#, options: .regularExpression) != nil
                     if !hasZone { value += "Z" }
@@ -146,7 +149,8 @@ internal sealed class SwiftEmitter(TypeCatalog catalog)
             foreach (var p in t.Props)
             {
                 var m = Naming.Member(p.Name);
-                var decodeType = SType(p.ClrType, false);
+                // The element type to decode: decodeIfPresent adds the optional itself.
+                var decodeType = SType(Nullable.GetUnderlyingType(p.ClrType) ?? p.ClrType, false);
                 if (!p.IsNullable)
                     sb.AppendLine($"        {m} = try c.decodeIfPresent({decodeType}.self, forKey: .{m}) ?? {Default(p)}");
                 else if (p.DefaultValue != null)
