@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<!-- Build-time tool: emits Swift and Kotlin versions of the TimingCommon wire models for the
+	     native iOS and Android apps, plus sample payloads the apps' tests decode. Not packaged.
+	     Usage: see Program.cs. -->
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\RedMist.TimingCommon\RedMist.TimingCommon.csproj" />
+	</ItemGroup>
+</Project>
