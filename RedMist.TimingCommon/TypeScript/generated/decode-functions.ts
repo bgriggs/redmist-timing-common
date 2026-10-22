@@ -28,6 +28,7 @@ import { TrackMapRenderPoint } from "./track-map-render-point";
 import { TrackMapBounds } from "./track-map-bounds";
 import { TrackMapStartFinish } from "./track-map-start-finish";
 import { Flags } from "./flags";
+import { PitPhase } from "./pit-phase";
 import { VideoDestinationType } from "./video-destination-type";
 import { VideoSystemType } from "./video-system-type";
 
@@ -159,6 +160,9 @@ export function decodeCarPosition(a: unknown[]): CarPosition {
         lapPositionPercent: a[66] as number | null,
         signalBars: a[67] as number | null,
         gpsHealth: a[68] as number | null,
+        pitPhase: a[69] as PitPhase,
+        pitStopStartTime: a[70] as Date | null,
+        lastPitStopDurationMs: a[71] as number | null,
     };
 }
 
@@ -410,6 +414,9 @@ export function decodeCarPositionPatch(a: unknown[]): CarPositionPatch {
         lapPositionPercent: a[66] as number | null,
         signalBars: a[67] as number | null,
         gpsHealth: a[68] as number | null,
+        pitPhase: a[69] as PitPhase | null,
+        pitStopStartTime: a[70] as Date | null,
+        lastPitStopDurationMs: a[71] as number | null,
     };
 }
 

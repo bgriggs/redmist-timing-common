@@ -533,4 +533,33 @@ public class CarPosition
     [Range(MinGpsHealth, MaxGpsHealth)]
     [MessagePack.Key(68)]
     public int? GpsHealth { get; set; }
+    /// <summary>
+    /// Where the car is in a pit visit. <see cref="PitPhase.None"/> both outside a visit and when no
+    /// source reports a sequence, in which case <see cref="IsInPit"/> and the other pit flags are
+    /// all there is.
+    /// </summary>
+    [JsonPropertyName("pph")]
+    [MessagePack.Key(69)]
+    public PitPhase PitPhase { get; set; }
+    /// <summary>
+    /// When the car's current stop in the pit began, in UTC - for a car pushed back into its garage,
+    /// the stop it carries on. Null until the car has stopped. Only meaningful while
+    /// <see cref="PitPhase"/> is <see cref="PitPhase.InPitBox"/>: it is left in place afterwards,
+    /// since a patch cannot clear a value back to null. Clients show the time stopped as the time
+    /// elapsed since this.
+    /// </summary>
+    [JsonPropertyName("pst")]
+    [MessagePack.Key(70)]
+    public DateTime? PitStopStartTime { get; set; }
+    /// <summary>
+    /// How long the car was stopped on its most recent pit visit, in milliseconds: the longest of the
+    /// visit's stops - traffic short of the box, the box, a queue at the exit - from stopping to
+    /// moving off. Set when the visit ends. Null until a visit has been timed; a visit with no stop,
+    /// or whose longest stop could not be timed because its start or end was lost in a gap in the
+    /// car's data, leaves the previous value in place. Not the same as <see cref="PitDurationMs"/>,
+    /// which is the in-car device's time for the whole visit, lane included.
+    /// </summary>
+    [JsonPropertyName("lpsd")]
+    [MessagePack.Key(71)]
+    public int? LastPitStopDurationMs { get; set; }
 }

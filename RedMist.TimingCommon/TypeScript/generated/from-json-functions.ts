@@ -28,6 +28,7 @@ import { TrackMapRenderPoint } from "./track-map-render-point"
 import { TrackMapBounds } from "./track-map-bounds"
 import { TrackMapStartFinish } from "./track-map-start-finish"
 import { Flags } from "./flags"
+import { PitPhase } from "./pit-phase"
 import { VideoDestinationType } from "./video-destination-type"
 import { VideoSystemType } from "./video-system-type"
 
@@ -159,6 +160,9 @@ export function carPositionFromJson(json: Record<string, unknown>): CarPosition 
         lapPositionPercent: json['lapposp'] as number | null,
         signalBars: json['sb'] as number | null,
         gpsHealth: json['gh'] as number | null,
+        pitPhase: json['pph'] as PitPhase,
+        pitStopStartTime: json['pst'] as Date | null,
+        lastPitStopDurationMs: json['lpsd'] as number | null,
     };
 }
 
@@ -410,6 +414,9 @@ export function carPositionPatchFromJson(json: Record<string, unknown>): CarPosi
         lapPositionPercent: json['lapPositionPercent'] as number | null,
         signalBars: json['signalBars'] as number | null,
         gpsHealth: json['gpsHealth'] as number | null,
+        pitPhase: json['pitPhase'] as PitPhase | null,
+        pitStopStartTime: json['pitStopStartTime'] as Date | null,
+        lastPitStopDurationMs: json['lastPitStopDurationMs'] as number | null,
     };
 }
 

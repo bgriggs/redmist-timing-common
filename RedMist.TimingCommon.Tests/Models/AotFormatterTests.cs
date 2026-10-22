@@ -77,7 +77,8 @@ public class AotFormatterTests
     public void TheCarPatchSerializesWithoutGeneratingCode()
     {
         // What the hub sends on "ReceiveCarPatches", as an array.
-        var patches = new[] { new CarPositionPatch { EventId = "7", Number = "42" } };
+        // An enum member set, so its formatter is looked up: a null slot never reaches it.
+        var patches = new[] { new CarPositionPatch { EventId = "7", Number = "42", PitPhase = PitPhase.InPitBox } };
 
         var bytes = MessagePackSerializer.Serialize(patches, AotOptions);
         var round = MessagePackSerializer.Deserialize<CarPositionPatch[]>(bytes, AotOptions);
@@ -85,5 +86,6 @@ public class AotFormatterTests
         Assert.AreEqual(1, round.Length);
         Assert.AreEqual("7", round[0].EventId);
         Assert.AreEqual("42", round[0].Number);
+        Assert.AreEqual(PitPhase.InPitBox, round[0].PitPhase);
     }
 }
