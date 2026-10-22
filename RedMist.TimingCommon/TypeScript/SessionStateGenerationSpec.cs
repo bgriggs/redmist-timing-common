@@ -46,6 +46,7 @@ public class SessionStateGenerationSpec : GenerationSpec
 
         // Enums
         AddEnum<Flags>();
+        AddEnum<PitPhase>();
         AddEnum<VideoSystemType>();
         AddEnum<VideoDestinationType>();
 

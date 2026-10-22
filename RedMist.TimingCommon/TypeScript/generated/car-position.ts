@@ -6,6 +6,7 @@
 import { Flags } from "./flags";
 import { CompletedSection } from "./completed-section";
 import { VideoStatus } from "./video-status";
+import { PitPhase } from "./pit-phase";
 
 /**
  * Status data for a car.
@@ -368,4 +369,24 @@ export interface CarPosition {
      * not the same as @see {@link RedMist.TimingCommon.Models.CarPosition.MinGpsHealth} - zero is a device that has gone quiet.
      */
     gpsHealth: number | null;
+    /**
+     * Where the car is in a pit visit. @see {@link RedMist.TimingCommon.Models.PitPhase.None} both outside a visit and when no
+     * source reports a sequence, in which case @see {@link RedMist.TimingCommon.Models.CarPosition.IsInPit} and the other pit flags are
+     * all there is.
+     */
+    pitPhase: PitPhase;
+    /**
+     * When the car first came to a stop in its pit box during its current or most recent pit visit,
+     * in UTC. Null until the car has stopped in a box. Only meaningful while @see {@link RedMist.TimingCommon.Models.CarPosition.PitPhase}
+     * is @see {@link RedMist.TimingCommon.Models.PitPhase.InPitBox}: it is left in place afterwards, since a patch cannot clear
+     * a value back to null. Clients show the time stopped as the time elapsed since this.
+     */
+    pitStopStartTime: Date | null;
+    /**
+     * How long the car was stopped in its pit box during its most recent pit visit, from first
+     * stopping to finally moving off, in milliseconds. Null until the car has completed a stop.
+     * Not the same as @see {@link RedMist.TimingCommon.Models.CarPosition.PitDurationMs}, which is the in-car device's time for the whole
+     * visit, lane included.
+     */
+    lastPitStopDurationMs: number | null;
 }

@@ -6,6 +6,7 @@
 import { Flags } from "./flags";
 import { CompletedSection } from "./completed-section";
 import { VideoStatus } from "./video-status";
+import { PitPhase } from "./pit-phase";
 
 /**
  * Patch variant of CarPosition with nullable properties for partial updates.
@@ -288,4 +289,16 @@ export interface CarPositionPatch {
      * Patch field for GpsHealth. Null indicates no change.
      */
     gpsHealth: number | null;
+    /**
+     * Patch field for PitPhase. Null indicates no change.
+     */
+    pitPhase: PitPhase | null;
+    /**
+     * Patch field for PitStopStartTime. Null indicates no change.
+     */
+    pitStopStartTime: Date | null;
+    /**
+     * Patch field for LastPitStopDurationMs. Null indicates no change.
+     */
+    lastPitStopDurationMs: number | null;
 }

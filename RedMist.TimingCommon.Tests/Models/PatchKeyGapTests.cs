@@ -28,7 +28,7 @@ public class GapModel
 /// Covers a patch whose MessagePack keys are not contiguous.
 /// </summary>
 /// <remarks>
-/// Neither shipping model has a gap today - CarPosition runs 0-68 and SessionState 0-35 - so nothing
+/// Neither shipping model has a gap today - CarPosition runs 0-71 and SessionState 0-35 - so nothing
 /// in the library exercises the branch that writes nil into an unclaimed slot. That branch is what
 /// keeps slot numbering stable when a member is removed, which has already happened once here: see
 /// CarPositionWireCompatTests on key 61. Getting it wrong would shift every later member by one and
