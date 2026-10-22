@@ -383,9 +383,10 @@ export interface CarPosition {
      */
     pitStopStartTime: Date | null;
     /**
-     * How long the car was stopped in its pit box during its most recent pit visit, from first
-     * stopping to finally moving off, in milliseconds. Null until the car has completed a stop.
-     * Not the same as @see {@link RedMist.TimingCommon.Models.CarPosition.PitDurationMs}, which is the in-car device's time for the whole
+     * How long the car was stopped in its pit box on its most recent timed stop, from first
+     * stopping to finally moving off, in milliseconds. Null until the car has completed one. A
+     * visit with no stop, or whose stop could not be timed - its start or end lost in a gap in the
+     * car's data - leaves the previous value in place. Not the same as @see {@link RedMist.TimingCommon.Models.CarPosition.PitDurationMs}, which is the in-car device's time for the whole
      * visit, lane included.
      */
     lastPitStopDurationMs: number | null;

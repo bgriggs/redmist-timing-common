@@ -551,9 +551,10 @@ public class CarPosition
     [MessagePack.Key(70)]
     public DateTime? PitStopStartTime { get; set; }
     /// <summary>
-    /// How long the car was stopped in its pit box during its most recent pit visit, from first
-    /// stopping to finally moving off, in milliseconds. Null until the car has completed a stop.
-    /// Not the same as <see cref="PitDurationMs"/>, which is the in-car device's time for the whole
+    /// How long the car was stopped in its pit box on its most recent timed stop, from first
+    /// stopping to finally moving off, in milliseconds. Null until the car has completed one. A
+    /// visit with no stop, or whose stop could not be timed - its start or end lost in a gap in the
+    /// car's data - leaves the previous value in place. Not the same as <see cref="PitDurationMs"/>, which is the in-car device's time for the whole
     /// visit, lane included.
     /// </summary>
     [JsonPropertyName("lpsd")]
