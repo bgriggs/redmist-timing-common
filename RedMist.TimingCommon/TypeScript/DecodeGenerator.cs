@@ -139,8 +139,11 @@ internal static class DecodeGenerator
         {
             if (decodableTypes.Contains(elementType))
             {
-                var mapExpr = $"({accessor} as unknown[][]).map(decode{elementType.Name})";
-                return isNullable ? $"{accessor} != null ? {mapExpr} : null" : mapExpr;
+                if (isNullable)
+                    return $"{accessor} != null ? ({accessor} as unknown[][]).map(decode{elementType.Name}) : null";
+                // A list appended to an existing type is missing from what an older server writes,
+                // and must read as empty rather than throw.
+                return $"(({accessor} ?? []) as unknown[][]).map(decode{elementType.Name})";
             }
             return $"{accessor} as {GetTsType(type)}";
         }
@@ -152,6 +155,11 @@ internal static class DecodeGenerator
                 return $"{accessor} != null ? decode{type.Name}({accessor} as unknown[]) : null";
             return $"decode{type.Name}({accessor} as unknown[])";
         }
+
+        // An enum appended to an existing type is missing from what an older server writes, and
+        // must read as its 0 member (None, by convention) rather than undefined.
+        if (type.IsEnum && !isNullable)
+            return $"({accessor} ?? 0) as {GetTsType(type)}";
 
         // Primitives, enums, dictionaries — simple cast
         return $"{accessor} as {GetTsType(type)}";
@@ -276,8 +284,10 @@ internal static class DecodeGenerator
         {
             if (decodableTypes.Contains(elementType))
             {
-                var mapExpr = $"({accessor} as Record<string, unknown>[]).map({ToCamelCase(elementType.Name)}FromJson)";
-                return isNullable ? $"{accessor} != null ? {mapExpr} : null" : mapExpr;
+                if (isNullable)
+                    return $"{accessor} != null ? ({accessor} as Record<string, unknown>[]).map({ToCamelCase(elementType.Name)}FromJson) : null";
+                // As in the MessagePack decoder: missing from an older server's payload reads as empty.
+                return $"(({accessor} ?? []) as Record<string, unknown>[]).map({ToCamelCase(elementType.Name)}FromJson)";
             }
             return $"{accessor} as {GetTsType(type)}";
         }
@@ -288,6 +298,10 @@ internal static class DecodeGenerator
                 return $"{accessor} != null ? {ToCamelCase(type.Name)}FromJson({accessor} as Record<string, unknown>) : null";
             return $"{ToCamelCase(type.Name)}FromJson({accessor} as Record<string, unknown>)";
         }
+
+        // As in the MessagePack decoder: an enum missing from an older server's payload reads as 0.
+        if (type.IsEnum && !isNullable)
+            return $"({accessor} ?? 0) as {GetTsType(type)}";
 
         return $"{accessor} as {GetTsType(type)}";
     }

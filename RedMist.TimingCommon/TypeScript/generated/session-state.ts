@@ -9,6 +9,8 @@ import { Flags } from "./flags";
 import { FlagDuration } from "./flag-duration";
 import { Section } from "./section";
 import { Announcement } from "./announcement";
+import { SectorInfo } from "./sector-info";
+import { SectorSource } from "./sector-source";
 
 /**
  * The overall state of a race session at any given time. 
@@ -195,4 +197,17 @@ export interface SessionState {
      * should omit the indicator entirely while it is false rather than drawing a stale grade.
      */
     gpsSourceHealth: number | null;
+    /**
+     * The sectors of the lap, ordered by @see {@link RedMist.TimingCommon.Models.SectorInfo.Index}, from 1 to 8 of them. Empty
+     * when the session has no sectors. Clients show sector times only when this has entries and at
+     * least one car has a @see {@link RedMist.TimingCommon.Models.CarPosition.Sectors} time, so an event set up for sectors
+     * shows no empty columns before any data arrives.
+     */
+    sectorLayout: SectorInfo[];
+    /**
+     * Where this session's sector times come from. @see {@link RedMist.TimingCommon.Models.SectorSource.None} when
+     * @see {@link RedMist.TimingCommon.Models.SessionState.SectorLayout} is empty. Clients should read a missing value, as from a server
+     * that predates it, as @see {@link RedMist.TimingCommon.Models.SectorSource.None}.
+     */
+    sectorSource: SectorSource;
 }

@@ -10,6 +10,8 @@ import { FlagDuration } from "./flag-duration"
 import { Section } from "./section"
 import { Announcement } from "./announcement"
 import { CompletedSection } from "./completed-section"
+import { SectorTime } from "./sector-time"
+import { SectorInfo } from "./sector-info"
 import { EventListSummary } from "./event-list-summary"
 import { Event } from "./event"
 import { Session } from "./session"
@@ -29,6 +31,7 @@ import { TrackMapBounds } from "./track-map-bounds"
 import { TrackMapStartFinish } from "./track-map-start-finish"
 import { Flags } from "./flags"
 import { PitPhase } from "./pit-phase"
+import { SectorSource } from "./sector-source"
 import { VideoDestinationType } from "./video-destination-type"
 import { VideoSystemType } from "./video-system-type"
 
@@ -47,10 +50,10 @@ export function sessionStateFromJson(json: Record<string, unknown>): SessionStat
         sessionEndTime: json['sessionEndTime'] as Date | null,
         localTimeZoneOffset: json['localTimeZoneOffset'] as number,
         isLive: json['isLive'] as boolean,
-        eventEntries: (json['eventEntries'] as Record<string, unknown>[]).map(eventEntryFromJson),
-        carPositions: (json['carPositions'] as Record<string, unknown>[]).map(carPositionFromJson),
-        currentFlag: json['currentFlag'] as Flags,
-        flagDurations: (json['flagDurations'] as Record<string, unknown>[]).map(flagDurationFromJson),
+        eventEntries: ((json['eventEntries'] ?? []) as Record<string, unknown>[]).map(eventEntryFromJson),
+        carPositions: ((json['carPositions'] ?? []) as Record<string, unknown>[]).map(carPositionFromJson),
+        currentFlag: (json['currentFlag'] ?? 0) as Flags,
+        flagDurations: ((json['flagDurations'] ?? []) as Record<string, unknown>[]).map(flagDurationFromJson),
         greenTimeMs: json['greenTimeMs'] as number | null,
         greenLaps: json['greenLaps'] as number | null,
         yellowTimeMs: json['yellowTimeMs'] as number | null,
@@ -59,9 +62,9 @@ export function sessionStateFromJson(json: Record<string, unknown>): SessionStat
         redTimeMs: json['redTimeMs'] as number | null,
         averageRaceSpeed: json['averageRaceSpeed'] as string,
         leadChanges: json['leadChanges'] as number | null,
-        sections: (json['sections'] as Record<string, unknown>[]).map(sectionFromJson),
+        sections: ((json['sections'] ?? []) as Record<string, unknown>[]).map(sectionFromJson),
         classColors: json['classColors'] as { [key: string]: string; },
-        announcements: (json['announcements'] as Record<string, unknown>[]).map(announcementFromJson),
+        announcements: ((json['announcements'] ?? []) as Record<string, unknown>[]).map(announcementFromJson),
         lastUpdated: json['lastUpdated'] as Date | null,
         classOrder: json['classOrder'] as { [key: string]: string; },
         isSimulation: json['isSimulation'] as boolean,
@@ -70,6 +73,8 @@ export function sessionStateFromJson(json: Record<string, unknown>): SessionStat
         trackPrecipitationPerc: json['trackPrecipitationPerc'] as number | null,
         hasTelemetrySource: json['hasTelemetrySource'] as boolean,
         gpsSourceHealth: json['gpsSourceHealth'] as number | null,
+        sectorLayout: ((json['sectorLayout'] ?? []) as Record<string, unknown>[]).map(sectorInfoFromJson),
+        sectorSource: (json['sectorSource'] ?? 0) as SectorSource,
     };
 }
 
@@ -129,10 +134,10 @@ export function carPositionFromJson(json: Record<string, unknown>): CarPosition 
         lapIncludedPit: json['lip'] as boolean,
         lastLoopName: json['ln'] as string,
         isStale: json['st'] as boolean,
-        trackFlag: json['flg'] as Flags,
-        localFlag: json['lflg'] as Flags,
+        trackFlag: (json['flg'] ?? 0) as Flags,
+        localFlag: (json['lflg'] ?? 0) as Flags,
         lapHadLocalFlag: json['lhlf'] as boolean | null,
-        completedSections: (json['csec'] as Record<string, unknown>[]).map(completedSectionFromJson),
+        completedSections: ((json['csec'] ?? []) as Record<string, unknown>[]).map(completedSectionFromJson),
         projectedLapTimeMs: json['plt'] as number,
         lapStartTime: json['lstt'] as string,
         driverName: json['dn'] as string,
@@ -160,15 +165,16 @@ export function carPositionFromJson(json: Record<string, unknown>): CarPosition 
         lapPositionPercent: json['lapposp'] as number | null,
         signalBars: json['sb'] as number | null,
         gpsHealth: json['gh'] as number | null,
-        pitPhase: json['pph'] as PitPhase,
+        pitPhase: (json['pph'] ?? 0) as PitPhase,
         pitStopStartTime: json['pst'] as Date | null,
         lastPitStopDurationMs: json['lpsd'] as number | null,
+        sectors: ((json['sec'] ?? []) as Record<string, unknown>[]).map(sectorTimeFromJson),
     };
 }
 
 export function flagDurationFromJson(json: Record<string, unknown>): FlagDuration {
     return {
-        flag: json['f'] as Flags,
+        flag: (json['f'] ?? 0) as Flags,
         startTime: json['s'] as Date,
         endTime: json['e'] as Date | null,
     };
@@ -201,6 +207,26 @@ export function completedSectionFromJson(json: Record<string, unknown>): Complet
     };
 }
 
+export function sectorTimeFromJson(json: Record<string, unknown>): SectorTime {
+    return {
+        index: json['i'] as number,
+        lap: json['l'] as number,
+        timeMs: json['t'] as number,
+        isInvalid: json['inv'] as boolean,
+        isPersonalBest: json['pb'] as boolean,
+        isOverallBest: json['ob'] as boolean,
+        isClassBest: json['cb'] as boolean,
+    };
+}
+
+export function sectorInfoFromJson(json: Record<string, unknown>): SectorInfo {
+    return {
+        index: json['i'] as number,
+        label: json['lbl'] as string,
+        lengthMeters: json['len'] as number | null,
+    };
+}
+
 export function eventListSummaryFromJson(json: Record<string, unknown>): EventListSummary {
     return {
         id: json['eid'] as number,
@@ -225,7 +251,7 @@ export function eventFromJson(json: Record<string, unknown>): Event {
         eventName: json['n'] as string,
         eventDate: json['d'] as string,
         eventUrl: json['u'] as string,
-        sessions: (json['s'] as Record<string, unknown>[]).map(sessionFromJson),
+        sessions: ((json['s'] ?? []) as Record<string, unknown>[]).map(sessionFromJson),
         organizationName: json['on'] as string,
         organizationWebsite: json['ow'] as string,
         organizationLogo: json['l'] as number[],
@@ -298,7 +324,7 @@ export function controlLogEntryFromJson(json: Record<string, unknown>): ControlL
 export function carControlLogsFromJson(json: Record<string, unknown>): CarControlLogs {
     return {
         carNumber: json['cn'] as string,
-        controlLogEntries: (json['entries'] as Record<string, unknown>[]).map(controlLogEntryFromJson),
+        controlLogEntries: ((json['entries'] ?? []) as Record<string, unknown>[]).map(controlLogEntryFromJson),
     };
 }
 
@@ -340,6 +366,8 @@ export function sessionStatePatchFromJson(json: Record<string, unknown>): Sessio
         trackPrecipitationPerc: json['trackPrecipitationPerc'] as number | null,
         hasTelemetrySource: json['hasTelemetrySource'] as boolean | null,
         gpsSourceHealth: json['gpsSourceHealth'] as number | null,
+        sectorLayout: json['sectorLayout'] != null ? (json['sectorLayout'] as Record<string, unknown>[]).map(sectorInfoFromJson) : null,
+        sectorSource: json['sectorSource'] as SectorSource | null,
     };
 }
 
@@ -417,19 +445,20 @@ export function carPositionPatchFromJson(json: Record<string, unknown>): CarPosi
         pitPhase: json['pitPhase'] as PitPhase | null,
         pitStopStartTime: json['pitStopStartTime'] as Date | null,
         lastPitStopDurationMs: json['lastPitStopDurationMs'] as number | null,
+        sectors: json['sectors'] != null ? (json['sectors'] as Record<string, unknown>[]).map(sectorTimeFromJson) : null,
     };
 }
 
 export function videoStatusFromJson(json: Record<string, unknown>): VideoStatus {
     return {
-        videoSystemType: json['videoSystemType'] as VideoSystemType,
+        videoSystemType: (json['videoSystemType'] ?? 0) as VideoSystemType,
         videoDestination: videoDestinationFromJson(json['videoDestination'] as Record<string, unknown>),
     };
 }
 
 export function videoDestinationFromJson(json: Record<string, unknown>): VideoDestination {
     return {
-        type: json['t'] as VideoDestinationType,
+        type: (json['t'] ?? 0) as VideoDestinationType,
         url: json['u'] as string,
         hostName: json['h'] as string,
         port: json['p'] as number,
@@ -447,7 +476,7 @@ export function broadcasterConfigFromJson(json: Record<string, unknown>): Broadc
 export function eventScheduleFromJson(json: Record<string, unknown>): EventSchedule {
     return {
         name: json['n'] as string,
-        entries: (json['s'] as Record<string, unknown>[]).map(eventScheduleEntryFromJson),
+        entries: ((json['s'] ?? []) as Record<string, unknown>[]).map(eventScheduleEntryFromJson),
     };
 }
 
@@ -465,7 +494,7 @@ export function trackMapRenderFromJson(json: Record<string, unknown>): TrackMapR
         eventId: json['eid'] as number,
         sessionId: json['sid'] as number,
         trackName: json['track'] as string,
-        points: (json['pts'] as Record<string, unknown>[]).map(trackMapRenderPointFromJson),
+        points: ((json['pts'] ?? []) as Record<string, unknown>[]).map(trackMapRenderPointFromJson),
         bounds: trackMapBoundsFromJson(json['bounds'] as Record<string, unknown>),
         lengthMeters: json['len'] as number,
         startFinish: json['sf'] != null ? trackMapStartFinishFromJson(json['sf'] as Record<string, unknown>) : null,

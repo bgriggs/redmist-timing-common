@@ -10,6 +10,8 @@ import { FlagDuration } from "./flag-duration";
 import { Section } from "./section";
 import { Announcement } from "./announcement";
 import { CompletedSection } from "./completed-section";
+import { SectorTime } from "./sector-time";
+import { SectorInfo } from "./sector-info";
 import { EventListSummary } from "./event-list-summary";
 import { Event } from "./event";
 import { Session } from "./session";
@@ -29,6 +31,7 @@ import { TrackMapBounds } from "./track-map-bounds";
 import { TrackMapStartFinish } from "./track-map-start-finish";
 import { Flags } from "./flags";
 import { PitPhase } from "./pit-phase";
+import { SectorSource } from "./sector-source";
 import { VideoDestinationType } from "./video-destination-type";
 import { VideoSystemType } from "./video-system-type";
 
@@ -47,10 +50,10 @@ export function decodeSessionState(a: unknown[]): SessionState {
         sessionEndTime: a[10] as Date | null,
         localTimeZoneOffset: a[11] as number,
         isLive: a[12] as boolean,
-        eventEntries: (a[13] as unknown[][]).map(decodeEventEntry),
-        carPositions: (a[14] as unknown[][]).map(decodeCarPosition),
-        currentFlag: a[15] as Flags,
-        flagDurations: (a[16] as unknown[][]).map(decodeFlagDuration),
+        eventEntries: ((a[13] ?? []) as unknown[][]).map(decodeEventEntry),
+        carPositions: ((a[14] ?? []) as unknown[][]).map(decodeCarPosition),
+        currentFlag: (a[15] ?? 0) as Flags,
+        flagDurations: ((a[16] ?? []) as unknown[][]).map(decodeFlagDuration),
         greenTimeMs: a[17] as number | null,
         greenLaps: a[18] as number | null,
         yellowTimeMs: a[19] as number | null,
@@ -59,9 +62,9 @@ export function decodeSessionState(a: unknown[]): SessionState {
         redTimeMs: a[22] as number | null,
         averageRaceSpeed: a[23] as string,
         leadChanges: a[24] as number | null,
-        sections: (a[25] as unknown[][]).map(decodeSection),
+        sections: ((a[25] ?? []) as unknown[][]).map(decodeSection),
         classColors: a[26] as { [key: string]: string; },
-        announcements: (a[27] as unknown[][]).map(decodeAnnouncement),
+        announcements: ((a[27] ?? []) as unknown[][]).map(decodeAnnouncement),
         lastUpdated: a[28] as Date | null,
         classOrder: a[29] as { [key: string]: string; },
         isSimulation: a[30] as boolean,
@@ -70,6 +73,8 @@ export function decodeSessionState(a: unknown[]): SessionState {
         trackPrecipitationPerc: a[33] as number | null,
         hasTelemetrySource: a[34] as boolean,
         gpsSourceHealth: a[35] as number | null,
+        sectorLayout: ((a[36] ?? []) as unknown[][]).map(decodeSectorInfo),
+        sectorSource: (a[37] ?? 0) as SectorSource,
     };
 }
 
@@ -129,10 +134,10 @@ export function decodeCarPosition(a: unknown[]): CarPosition {
         lapIncludedPit: a[35] as boolean,
         lastLoopName: a[36] as string,
         isStale: a[37] as boolean,
-        trackFlag: a[38] as Flags,
-        localFlag: a[39] as Flags,
+        trackFlag: (a[38] ?? 0) as Flags,
+        localFlag: (a[39] ?? 0) as Flags,
         lapHadLocalFlag: a[40] as boolean | null,
-        completedSections: (a[41] as unknown[][]).map(decodeCompletedSection),
+        completedSections: ((a[41] ?? []) as unknown[][]).map(decodeCompletedSection),
         projectedLapTimeMs: a[42] as number,
         lapStartTime: a[43] as string,
         driverName: a[44] as string,
@@ -160,15 +165,16 @@ export function decodeCarPosition(a: unknown[]): CarPosition {
         lapPositionPercent: a[66] as number | null,
         signalBars: a[67] as number | null,
         gpsHealth: a[68] as number | null,
-        pitPhase: a[69] as PitPhase,
+        pitPhase: (a[69] ?? 0) as PitPhase,
         pitStopStartTime: a[70] as Date | null,
         lastPitStopDurationMs: a[71] as number | null,
+        sectors: ((a[72] ?? []) as unknown[][]).map(decodeSectorTime),
     };
 }
 
 export function decodeFlagDuration(a: unknown[]): FlagDuration {
     return {
-        flag: a[0] as Flags,
+        flag: (a[0] ?? 0) as Flags,
         startTime: a[1] as Date,
         endTime: a[2] as Date | null,
     };
@@ -201,6 +207,26 @@ export function decodeCompletedSection(a: unknown[]): CompletedSection {
     };
 }
 
+export function decodeSectorTime(a: unknown[]): SectorTime {
+    return {
+        index: a[0] as number,
+        lap: a[1] as number,
+        timeMs: a[2] as number,
+        isInvalid: a[3] as boolean,
+        isPersonalBest: a[4] as boolean,
+        isOverallBest: a[5] as boolean,
+        isClassBest: a[6] as boolean,
+    };
+}
+
+export function decodeSectorInfo(a: unknown[]): SectorInfo {
+    return {
+        index: a[0] as number,
+        label: a[1] as string,
+        lengthMeters: a[2] as number | null,
+    };
+}
+
 export function decodeEventListSummary(a: unknown[]): EventListSummary {
     return {
         id: a[0] as number,
@@ -225,7 +251,7 @@ export function decodeEvent(a: unknown[]): Event {
         eventName: a[1] as string,
         eventDate: a[2] as string,
         eventUrl: a[3] as string,
-        sessions: (a[4] as unknown[][]).map(decodeSession),
+        sessions: ((a[4] ?? []) as unknown[][]).map(decodeSession),
         organizationName: a[5] as string,
         organizationWebsite: a[6] as string,
         organizationLogo: a[7] as number[],
@@ -298,7 +324,7 @@ export function decodeControlLogEntry(a: unknown[]): ControlLogEntry {
 export function decodeCarControlLogs(a: unknown[]): CarControlLogs {
     return {
         carNumber: a[0] as string,
-        controlLogEntries: (a[1] as unknown[][]).map(decodeControlLogEntry),
+        controlLogEntries: ((a[1] ?? []) as unknown[][]).map(decodeControlLogEntry),
     };
 }
 
@@ -340,6 +366,8 @@ export function decodeSessionStatePatch(a: unknown[]): SessionStatePatch {
         trackPrecipitationPerc: a[33] as number | null,
         hasTelemetrySource: a[34] as boolean | null,
         gpsSourceHealth: a[35] as number | null,
+        sectorLayout: a[36] != null ? (a[36] as unknown[][]).map(decodeSectorInfo) : null,
+        sectorSource: a[37] as SectorSource | null,
     };
 }
 
@@ -417,19 +445,20 @@ export function decodeCarPositionPatch(a: unknown[]): CarPositionPatch {
         pitPhase: a[69] as PitPhase | null,
         pitStopStartTime: a[70] as Date | null,
         lastPitStopDurationMs: a[71] as number | null,
+        sectors: a[72] != null ? (a[72] as unknown[][]).map(decodeSectorTime) : null,
     };
 }
 
 export function decodeVideoStatus(a: unknown[]): VideoStatus {
     return {
-        videoSystemType: a[0] as VideoSystemType,
+        videoSystemType: (a[0] ?? 0) as VideoSystemType,
         videoDestination: decodeVideoDestination(a[1] as unknown[]),
     };
 }
 
 export function decodeVideoDestination(a: unknown[]): VideoDestination {
     return {
-        type: a[0] as VideoDestinationType,
+        type: (a[0] ?? 0) as VideoDestinationType,
         url: a[1] as string,
         hostName: a[2] as string,
         port: a[3] as number,
@@ -447,7 +476,7 @@ export function decodeBroadcasterConfig(a: unknown[]): BroadcasterConfig {
 export function decodeEventSchedule(a: unknown[]): EventSchedule {
     return {
         name: a[0] as string,
-        entries: (a[1] as unknown[][]).map(decodeEventScheduleEntry),
+        entries: ((a[1] ?? []) as unknown[][]).map(decodeEventScheduleEntry),
     };
 }
 
@@ -465,7 +494,7 @@ export function decodeTrackMapRender(a: unknown[]): TrackMapRender {
         eventId: a[0] as number,
         sessionId: a[1] as number,
         trackName: a[2] as string,
-        points: (a[3] as unknown[][]).map(decodeTrackMapRenderPoint),
+        points: ((a[3] ?? []) as unknown[][]).map(decodeTrackMapRenderPoint),
         bounds: decodeTrackMapBounds(a[4] as unknown[]),
         lengthMeters: a[5] as number,
         startFinish: a[6] != null ? decodeTrackMapStartFinish(a[6] as unknown[]) : null,

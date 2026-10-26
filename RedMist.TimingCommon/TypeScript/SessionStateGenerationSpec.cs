@@ -20,6 +20,8 @@ public class SessionStateGenerationSpec : GenerationSpec
         typeof(Section),
         typeof(Announcement),
         typeof(CompletedSection),
+        typeof(SectorTime),
+        typeof(SectorInfo),
         typeof(EventListSummary),
         typeof(Models.Event),
         typeof(Session),
@@ -47,6 +49,7 @@ public class SessionStateGenerationSpec : GenerationSpec
         // Enums
         AddEnum<Flags>();
         AddEnum<PitPhase>();
+        AddEnum<SectorSource>();
         AddEnum<VideoSystemType>();
         AddEnum<VideoDestinationType>();
 
