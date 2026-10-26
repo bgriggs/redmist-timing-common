@@ -7,6 +7,7 @@ import { Flags } from "./flags";
 import { CompletedSection } from "./completed-section";
 import { VideoStatus } from "./video-status";
 import { PitPhase } from "./pit-phase";
+import { SectorTime } from "./sector-time";
 
 /**
  * Status data for a car.
@@ -206,6 +207,10 @@ export interface CarPosition {
     lapHadLocalFlag: boolean | null;
     /**
      * Car's completed section for the current lap.
+     * 
+     * @remarks
+     * Superseded by @see {@link RedMist.TimingCommon.Models.CarPosition.Sectors}, which carries sector times from every source, with best
+     * flags. Kept for existing readers; new clients should not draw it.
      */
     completedSections: CompletedSection[];
     /**
@@ -392,4 +397,11 @@ export interface CarPosition {
      * which is the in-car device's time for the whole visit, lane included.
      */
     lastPitStopDurationMs: number | null;
+    /**
+     * The car's most recent time through each sector, at most one per sector, ordered by
+     * @see {@link RedMist.TimingCommon.Models.SectorTime.Index}. Empty when the session has no sectors or the car has not
+     * completed one yet. A patch replaces the whole list. Supersedes
+     * @see {@link RedMist.TimingCommon.Models.CarPosition.CompletedSections}, which carried a timing system's raw sections.
+     */
+    sectors: SectorTime[];
 }

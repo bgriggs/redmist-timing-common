@@ -139,8 +139,11 @@ internal static class DecodeGenerator
         {
             if (decodableTypes.Contains(elementType))
             {
-                var mapExpr = $"({accessor} as unknown[][]).map(decode{elementType.Name})";
-                return isNullable ? $"{accessor} != null ? {mapExpr} : null" : mapExpr;
+                if (isNullable)
+                    return $"{accessor} != null ? ({accessor} as unknown[][]).map(decode{elementType.Name}) : null";
+                // A list appended to an existing type is missing from what an older server writes,
+                // and must read as empty rather than throw.
+                return $"(({accessor} ?? []) as unknown[][]).map(decode{elementType.Name})";
             }
             return $"{accessor} as {GetTsType(type)}";
         }
@@ -276,8 +279,10 @@ internal static class DecodeGenerator
         {
             if (decodableTypes.Contains(elementType))
             {
-                var mapExpr = $"({accessor} as Record<string, unknown>[]).map({ToCamelCase(elementType.Name)}FromJson)";
-                return isNullable ? $"{accessor} != null ? {mapExpr} : null" : mapExpr;
+                if (isNullable)
+                    return $"{accessor} != null ? ({accessor} as Record<string, unknown>[]).map({ToCamelCase(elementType.Name)}FromJson) : null";
+                // As in the MessagePack decoder: missing from an older server's payload reads as empty.
+                return $"(({accessor} ?? []) as Record<string, unknown>[]).map({ToCamelCase(elementType.Name)}FromJson)";
             }
             return $"{accessor} as {GetTsType(type)}";
         }

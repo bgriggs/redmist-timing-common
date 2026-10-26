@@ -163,6 +163,134 @@ public class CarPositionWireCompatTests
     }
 
     /// <summary>
+    /// Mimics a reader built before sectors existed, whose highest key is
+    /// <see cref="CarPosition.LastPitStopDurationMs"/> at 71.
+    /// </summary>
+    [MessagePackObject]
+    public class ReaderWithoutSectors
+    {
+        [Key(0)]
+        public string? EventId { get; set; }
+        [Key(71)]
+        public int? LastPitStopDurationMs { get; set; }
+    }
+
+    private static List<SectorTime> SampleSectors() =>
+    [
+        new SectorTime { Index = 1, Lap = 12, TimeMs = 26_712, IsPersonalBest = true },
+        new SectorTime { Index = 2, Lap = 11, TimeMs = 48_901, IsOverallBest = true, IsClassBest = true, IsPersonalBest = true },
+        new SectorTime { Index = 3, Lap = 11, TimeMs = 31_044, IsInvalid = true },
+    ];
+
+    [TestMethod]
+    public void Serialize_WithSectors_IsDecodableByReaderThatStopsAtLastPitStopDuration()
+    {
+        var bytes = MessagePackSerializer.Serialize(new CarPosition
+        {
+            EventId = "297",
+            LastPitStopDurationMs = 80_000,
+            Sectors = SampleSectors(),
+        });
+
+        var older = MessagePackSerializer.Deserialize<ReaderWithoutSectors>(bytes);
+
+        Assert.AreEqual("297", older.EventId);
+        Assert.AreEqual(80_000, older.LastPitStopDurationMs);
+    }
+
+    [TestMethod]
+    public void Deserialize_PayloadWrittenBeforeSectorsExisted_LeavesThemEmpty()
+    {
+        var current = MessagePackSerializer.Serialize(new CarPosition
+        {
+            EventId = "297",
+            LastPitStopDurationMs = 80_000,
+            Sectors = SampleSectors(),
+        });
+        // Keys 0-71: everything up to and including LastPitStopDurationMs.
+        var asOlderServerWroteIt = TruncateArray(current, 72);
+
+        var read = MessagePackSerializer.Deserialize<CarPosition>(asOlderServerWroteIt);
+
+        Assert.AreEqual(80_000, read.LastPitStopDurationMs);
+        Assert.IsNotNull(read.Sectors);
+        Assert.AreEqual(0, read.Sectors.Count);
+    }
+
+    [TestMethod]
+    public void Sectors_RoundTripInFullStateAndPatch()
+    {
+        var car = MessagePackSerializer.Deserialize<CarPosition>(
+            MessagePackSerializer.Serialize(new CarPosition { Sectors = SampleSectors() }));
+        CollectionAssert.AreEqual(SampleSectors(), car.Sectors);
+
+        var patch = MessagePackSerializer.Deserialize<CarPositionPatch>(
+            MessagePackSerializer.Serialize(new CarPositionPatch { Number = "7", Sectors = SampleSectors() }));
+        Assert.IsNotNull(patch.Sectors);
+        CollectionAssert.AreEqual(SampleSectors(), patch.Sectors);
+
+        var untouched = MessagePackSerializer.Deserialize<CarPositionPatch>(
+            MessagePackSerializer.Serialize(new CarPositionPatch { Number = "7" }));
+        Assert.IsNull(untouched.Sectors);
+    }
+
+    [TestMethod]
+    public void Sectors_RoundTripAsJson()
+    {
+        var json = System.Text.Json.JsonSerializer.Serialize(new CarPosition { Sectors = SampleSectors() });
+        StringAssert.Contains(json, "\"sec\":");
+
+        var car = System.Text.Json.JsonSerializer.Deserialize<CarPosition>(json)!;
+
+        CollectionAssert.AreEqual(SampleSectors(), car.Sectors);
+    }
+
+    /// <summary>
+    /// Mimics a reader built before the sector layout existed, whose highest key is
+    /// <see cref="SessionState.GpsSourceHealth"/> at 35.
+    /// </summary>
+    [MessagePackObject]
+    public class SessionReaderWithoutSectorLayout
+    {
+        [Key(0)]
+        public int EventId { get; set; }
+        [Key(35)]
+        public int? GpsSourceHealth { get; set; }
+    }
+
+    private static List<SectorInfo> SampleLayout() =>
+    [
+        new SectorInfo { Index = 1, Label = "S1", LengthMeters = 1210.5 },
+        new SectorInfo { Index = 2, Label = "S2" },
+        new SectorInfo { Index = 3, Label = "S3", LengthMeters = 1406 },
+    ];
+
+    [TestMethod]
+    public void SessionState_SectorLayout_RoundTripsAndOlderReadersSkipIt()
+    {
+        var bytes = MessagePackSerializer.Serialize(new SessionState
+        {
+            EventId = 487,
+            GpsSourceHealth = 3,
+            SectorLayout = SampleLayout(),
+            SectorSource = SectorSource.External,
+        });
+
+        var round = MessagePackSerializer.Deserialize<SessionState>(bytes);
+        CollectionAssert.AreEqual(SampleLayout(), round.SectorLayout);
+        Assert.AreEqual(SectorSource.External, round.SectorSource);
+
+        var older = MessagePackSerializer.Deserialize<SessionReaderWithoutSectorLayout>(bytes);
+        Assert.AreEqual(487, older.EventId);
+        Assert.AreEqual(3, older.GpsSourceHealth);
+
+        // Keys 0-35: as a server that predates the layout wrote it.
+        var fromOlderServer = MessagePackSerializer.Deserialize<SessionState>(TruncateArray(bytes, 36));
+        Assert.AreEqual(0, fromOlderServer.SectorLayout.Count);
+        Assert.AreEqual(SectorSource.None, fromOlderServer.SectorSource);
+    }
+
+    /// <summary>
     /// Rewrites a keyed payload keeping only its first <paramref name="keep"/> elements, which is
     /// exactly how the same object looked before the later members were added.
     /// </summary>

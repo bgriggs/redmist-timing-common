@@ -9,6 +9,8 @@ import { Flags } from "./flags";
 import { FlagDuration } from "./flag-duration";
 import { Section } from "./section";
 import { Announcement } from "./announcement";
+import { SectorInfo } from "./sector-info";
+import { SectorSource } from "./sector-source";
 
 /**
  * Patch variant of SessionState with nullable properties for partial updates.
@@ -159,4 +161,12 @@ export interface SessionStatePatch {
      * Patch field for GpsSourceHealth. Null indicates no change.
      */
     gpsSourceHealth: number | null;
+    /**
+     * Patch field for SectorLayout. Null indicates no change.
+     */
+    sectorLayout: SectorInfo[] | null;
+    /**
+     * Patch field for SectorSource. Null indicates no change.
+     */
+    sectorSource: SectorSource | null;
 }

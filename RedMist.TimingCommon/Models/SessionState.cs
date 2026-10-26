@@ -242,4 +242,20 @@ public class SessionState
     [Range(CarPosition.MinGpsHealth, CarPosition.MaxGpsHealth)]
     [MessagePack.Key(35)]
     public int? GpsSourceHealth { get; set; }
+    /// <summary>
+    /// The sectors of the lap, ordered by <see cref="SectorInfo.Index"/>, from 1 to 8 of them. Empty
+    /// when the session has no sectors. Clients show sector times only when this has entries and at
+    /// least one car has a <see cref="CarPosition.Sectors"/> time, so an event set up for sectors
+    /// shows no empty columns before any data arrives.
+    /// </summary>
+    [MessagePack.Key(36)]
+    [MaxLength(8)]
+    public List<SectorInfo> SectorLayout { get; set; } = [];
+    /// <summary>
+    /// Where this session's sector times come from. <see cref="SectorSource.None"/> when
+    /// <see cref="SectorLayout"/> is empty. Clients should read a missing value, as from a server
+    /// that predates it, as <see cref="SectorSource.None"/>.
+    /// </summary>
+    [MessagePack.Key(37)]
+    public SectorSource SectorSource { get; set; }
 }

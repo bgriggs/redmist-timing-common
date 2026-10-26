@@ -64,13 +64,22 @@ public class AotFormatterTests
     public void TheSessionPatchSerializesWithoutGeneratingCode()
     {
         // What the hub sends on "ReceiveSessionPatch".
-        var patch = new SessionStatePatch { EventId = 7, EventName = "Test" };
+        var patch = new SessionStatePatch
+        {
+            EventId = 7,
+            EventName = "Test",
+            // A nested model and an enum, so their formatters are looked up: a null slot never reaches them.
+            SectorLayout = [new SectorInfo { Index = 1, Label = "S1", LengthMeters = 1210 }],
+            SectorSource = SectorSource.External,
+        };
 
         var bytes = MessagePackSerializer.Serialize(patch, AotOptions);
         var round = MessagePackSerializer.Deserialize<SessionStatePatch>(bytes, AotOptions);
 
         Assert.AreEqual(7, round.EventId);
         Assert.AreEqual("Test", round.EventName);
+        Assert.AreEqual("S1", round.SectorLayout![0].Label);
+        Assert.AreEqual(SectorSource.External, round.SectorSource);
     }
 
     [TestMethod]
@@ -78,7 +87,17 @@ public class AotFormatterTests
     {
         // What the hub sends on "ReceiveCarPatches", as an array.
         // An enum member set, so its formatter is looked up: a null slot never reaches it.
-        var patches = new[] { new CarPositionPatch { EventId = "7", Number = "42", PitPhase = PitPhase.InPitBox } };
+        var patches = new[]
+        {
+            new CarPositionPatch
+            {
+                EventId = "7",
+                Number = "42",
+                PitPhase = PitPhase.InPitBox,
+                // A nested model, so its source-generated formatter is looked up too.
+                Sectors = [new SectorTime { Index = 1, Lap = 3, TimeMs = 26_700, IsOverallBest = true }],
+            },
+        };
 
         var bytes = MessagePackSerializer.Serialize(patches, AotOptions);
         var round = MessagePackSerializer.Deserialize<CarPositionPatch[]>(bytes, AotOptions);
@@ -87,5 +106,7 @@ public class AotFormatterTests
         Assert.AreEqual("7", round[0].EventId);
         Assert.AreEqual("42", round[0].Number);
         Assert.AreEqual(PitPhase.InPitBox, round[0].PitPhase);
+        Assert.AreEqual(26_700, round[0].Sectors![0].TimeMs);
+        Assert.IsTrue(round[0].Sectors![0].IsOverallBest);
     }
 }

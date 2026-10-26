@@ -7,6 +7,7 @@ import { Flags } from "./flags";
 import { CompletedSection } from "./completed-section";
 import { VideoStatus } from "./video-status";
 import { PitPhase } from "./pit-phase";
+import { SectorTime } from "./sector-time";
 
 /**
  * Patch variant of CarPosition with nullable properties for partial updates.
@@ -301,4 +302,8 @@ export interface CarPositionPatch {
      * Patch field for LastPitStopDurationMs. Null indicates no change.
      */
     lastPitStopDurationMs: number | null;
+    /**
+     * Patch field for Sectors. Null indicates no change.
+     */
+    sectors: SectorTime[] | null;
 }

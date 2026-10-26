@@ -304,6 +304,10 @@ public class CarPosition
     /// <summary>
     /// Car's completed section for the current lap.
     /// </summary>
+    /// <remarks>
+    /// Superseded by <see cref="Sectors"/>, which carries sector times from every source, with best
+    /// flags. Kept for existing readers; new clients should not draw it.
+    /// </remarks>
     [JsonPropertyName("csec")]
     [MessagePack.Key(41)]
     [MaxLength(5)]
@@ -562,4 +566,14 @@ public class CarPosition
     [JsonPropertyName("lpsd")]
     [MessagePack.Key(71)]
     public int? LastPitStopDurationMs { get; set; }
+    /// <summary>
+    /// The car's most recent time through each sector, at most one per sector, ordered by
+    /// <see cref="SectorTime.Index"/>. Empty when the session has no sectors or the car has not
+    /// completed one yet. A patch replaces the whole list. Supersedes
+    /// <see cref="CompletedSections"/>, which carried a timing system's raw sections.
+    /// </summary>
+    [JsonPropertyName("sec")]
+    [MessagePack.Key(72)]
+    [MaxLength(8)]
+    public List<SectorTime> Sectors { get; set; } = [];
 }
