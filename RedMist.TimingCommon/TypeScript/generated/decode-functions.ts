@@ -52,7 +52,7 @@ export function decodeSessionState(a: unknown[]): SessionState {
         isLive: a[12] as boolean,
         eventEntries: ((a[13] ?? []) as unknown[][]).map(decodeEventEntry),
         carPositions: ((a[14] ?? []) as unknown[][]).map(decodeCarPosition),
-        currentFlag: a[15] as Flags,
+        currentFlag: (a[15] ?? 0) as Flags,
         flagDurations: ((a[16] ?? []) as unknown[][]).map(decodeFlagDuration),
         greenTimeMs: a[17] as number | null,
         greenLaps: a[18] as number | null,
@@ -74,7 +74,7 @@ export function decodeSessionState(a: unknown[]): SessionState {
         hasTelemetrySource: a[34] as boolean,
         gpsSourceHealth: a[35] as number | null,
         sectorLayout: ((a[36] ?? []) as unknown[][]).map(decodeSectorInfo),
-        sectorSource: a[37] as SectorSource,
+        sectorSource: (a[37] ?? 0) as SectorSource,
     };
 }
 
@@ -134,8 +134,8 @@ export function decodeCarPosition(a: unknown[]): CarPosition {
         lapIncludedPit: a[35] as boolean,
         lastLoopName: a[36] as string,
         isStale: a[37] as boolean,
-        trackFlag: a[38] as Flags,
-        localFlag: a[39] as Flags,
+        trackFlag: (a[38] ?? 0) as Flags,
+        localFlag: (a[39] ?? 0) as Flags,
         lapHadLocalFlag: a[40] as boolean | null,
         completedSections: ((a[41] ?? []) as unknown[][]).map(decodeCompletedSection),
         projectedLapTimeMs: a[42] as number,
@@ -165,7 +165,7 @@ export function decodeCarPosition(a: unknown[]): CarPosition {
         lapPositionPercent: a[66] as number | null,
         signalBars: a[67] as number | null,
         gpsHealth: a[68] as number | null,
-        pitPhase: a[69] as PitPhase,
+        pitPhase: (a[69] ?? 0) as PitPhase,
         pitStopStartTime: a[70] as Date | null,
         lastPitStopDurationMs: a[71] as number | null,
         sectors: ((a[72] ?? []) as unknown[][]).map(decodeSectorTime),
@@ -174,7 +174,7 @@ export function decodeCarPosition(a: unknown[]): CarPosition {
 
 export function decodeFlagDuration(a: unknown[]): FlagDuration {
     return {
-        flag: a[0] as Flags,
+        flag: (a[0] ?? 0) as Flags,
         startTime: a[1] as Date,
         endTime: a[2] as Date | null,
     };
@@ -451,14 +451,14 @@ export function decodeCarPositionPatch(a: unknown[]): CarPositionPatch {
 
 export function decodeVideoStatus(a: unknown[]): VideoStatus {
     return {
-        videoSystemType: a[0] as VideoSystemType,
+        videoSystemType: (a[0] ?? 0) as VideoSystemType,
         videoDestination: decodeVideoDestination(a[1] as unknown[]),
     };
 }
 
 export function decodeVideoDestination(a: unknown[]): VideoDestination {
     return {
-        type: a[0] as VideoDestinationType,
+        type: (a[0] ?? 0) as VideoDestinationType,
         url: a[1] as string,
         hostName: a[2] as string,
         port: a[3] as number,

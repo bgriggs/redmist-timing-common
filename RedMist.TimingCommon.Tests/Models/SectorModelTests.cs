@@ -15,7 +15,7 @@ public class SectorModelTests
         new() { Index = index, Lap = 4, TimeMs = timeMs, IsPersonalBest = true };
 
     [TestMethod]
-    public void CreatePatch_SendsSectors_WhenOneFlagChangesInPlace()
+    public void CreatePatch_SendsSectors_WhenOnlyOneFlagDiffers()
     {
         var before = new CarPosition { Number = "7", Sectors = [Sector(1, 26_700), Sector(2, 48_900)] };
         var after = new CarPosition { Number = "7", Sectors = [Sector(1, 26_700), Sector(2, 48_900)] };
@@ -80,16 +80,19 @@ public class SectorModelTests
         AssertEqualsCoversEveryProperty(() => new SectorInfo { Index = 1, Label = "S1", LengthMeters = 100 });
 
     [TestMethod]
-    public void SectorInfo_Equals_IsReflexiveForNaNLength()
+    public void SectorInfo_Equals_TreatsNaNLengthsAsEqual()
     {
-        var info = new SectorInfo { Index = 1, Label = "S1", LengthMeters = double.NaN };
+        var a = new SectorInfo { Index = 1, Label = "S1", LengthMeters = double.NaN };
+        var b = new SectorInfo { Index = 1, Label = "S1", LengthMeters = double.NaN };
 
-        Assert.AreEqual(info, info);
+        Assert.AreEqual(a, b);
+        Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
     }
 
     private static void AssertEqualsCoversEveryProperty<T>(Func<T> create) where T : class
     {
         Assert.AreEqual(create(), create());
+        Assert.AreEqual(create().GetHashCode(), create().GetHashCode());
 
         foreach (var property in typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {

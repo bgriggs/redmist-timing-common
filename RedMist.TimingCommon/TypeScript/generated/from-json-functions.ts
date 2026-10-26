@@ -52,7 +52,7 @@ export function sessionStateFromJson(json: Record<string, unknown>): SessionStat
         isLive: json['isLive'] as boolean,
         eventEntries: ((json['eventEntries'] ?? []) as Record<string, unknown>[]).map(eventEntryFromJson),
         carPositions: ((json['carPositions'] ?? []) as Record<string, unknown>[]).map(carPositionFromJson),
-        currentFlag: json['currentFlag'] as Flags,
+        currentFlag: (json['currentFlag'] ?? 0) as Flags,
         flagDurations: ((json['flagDurations'] ?? []) as Record<string, unknown>[]).map(flagDurationFromJson),
         greenTimeMs: json['greenTimeMs'] as number | null,
         greenLaps: json['greenLaps'] as number | null,
@@ -74,7 +74,7 @@ export function sessionStateFromJson(json: Record<string, unknown>): SessionStat
         hasTelemetrySource: json['hasTelemetrySource'] as boolean,
         gpsSourceHealth: json['gpsSourceHealth'] as number | null,
         sectorLayout: ((json['sectorLayout'] ?? []) as Record<string, unknown>[]).map(sectorInfoFromJson),
-        sectorSource: json['sectorSource'] as SectorSource,
+        sectorSource: (json['sectorSource'] ?? 0) as SectorSource,
     };
 }
 
@@ -134,8 +134,8 @@ export function carPositionFromJson(json: Record<string, unknown>): CarPosition 
         lapIncludedPit: json['lip'] as boolean,
         lastLoopName: json['ln'] as string,
         isStale: json['st'] as boolean,
-        trackFlag: json['flg'] as Flags,
-        localFlag: json['lflg'] as Flags,
+        trackFlag: (json['flg'] ?? 0) as Flags,
+        localFlag: (json['lflg'] ?? 0) as Flags,
         lapHadLocalFlag: json['lhlf'] as boolean | null,
         completedSections: ((json['csec'] ?? []) as Record<string, unknown>[]).map(completedSectionFromJson),
         projectedLapTimeMs: json['plt'] as number,
@@ -165,7 +165,7 @@ export function carPositionFromJson(json: Record<string, unknown>): CarPosition 
         lapPositionPercent: json['lapposp'] as number | null,
         signalBars: json['sb'] as number | null,
         gpsHealth: json['gh'] as number | null,
-        pitPhase: json['pph'] as PitPhase,
+        pitPhase: (json['pph'] ?? 0) as PitPhase,
         pitStopStartTime: json['pst'] as Date | null,
         lastPitStopDurationMs: json['lpsd'] as number | null,
         sectors: ((json['sec'] ?? []) as Record<string, unknown>[]).map(sectorTimeFromJson),
@@ -174,7 +174,7 @@ export function carPositionFromJson(json: Record<string, unknown>): CarPosition 
 
 export function flagDurationFromJson(json: Record<string, unknown>): FlagDuration {
     return {
-        flag: json['f'] as Flags,
+        flag: (json['f'] ?? 0) as Flags,
         startTime: json['s'] as Date,
         endTime: json['e'] as Date | null,
     };
@@ -451,14 +451,14 @@ export function carPositionPatchFromJson(json: Record<string, unknown>): CarPosi
 
 export function videoStatusFromJson(json: Record<string, unknown>): VideoStatus {
     return {
-        videoSystemType: json['videoSystemType'] as VideoSystemType,
+        videoSystemType: (json['videoSystemType'] ?? 0) as VideoSystemType,
         videoDestination: videoDestinationFromJson(json['videoDestination'] as Record<string, unknown>),
     };
 }
 
 export function videoDestinationFromJson(json: Record<string, unknown>): VideoDestination {
     return {
-        type: json['t'] as VideoDestinationType,
+        type: (json['t'] ?? 0) as VideoDestinationType,
         url: json['u'] as string,
         hostName: json['h'] as string,
         port: json['p'] as number,

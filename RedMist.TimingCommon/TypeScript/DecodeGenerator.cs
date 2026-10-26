@@ -156,6 +156,11 @@ internal static class DecodeGenerator
             return $"decode{type.Name}({accessor} as unknown[])";
         }
 
+        // An enum appended to an existing type is missing from what an older server writes, and
+        // must read as its 0 member (None, by convention) rather than undefined.
+        if (type.IsEnum && !isNullable)
+            return $"({accessor} ?? 0) as {GetTsType(type)}";
+
         // Primitives, enums, dictionaries — simple cast
         return $"{accessor} as {GetTsType(type)}";
     }
@@ -293,6 +298,10 @@ internal static class DecodeGenerator
                 return $"{accessor} != null ? {ToCamelCase(type.Name)}FromJson({accessor} as Record<string, unknown>) : null";
             return $"{ToCamelCase(type.Name)}FromJson({accessor} as Record<string, unknown>)";
         }
+
+        // As in the MessagePack decoder: an enum missing from an older server's payload reads as 0.
+        if (type.IsEnum && !isNullable)
+            return $"({accessor} ?? 0) as {GetTsType(type)}";
 
         return $"{accessor} as {GetTsType(type)}";
     }
